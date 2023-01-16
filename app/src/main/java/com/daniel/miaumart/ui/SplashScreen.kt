@@ -5,8 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.WindowManager
-import com.daniel.miaumart.MainActivity
-import com.daniel.miaumart.R
+import com.daniel.miaumart.ui.activities.MainActivity
 import com.daniel.miaumart.databinding.ActivitySplashScreenBinding
 
 class SplashScreen : AppCompatActivity() {
