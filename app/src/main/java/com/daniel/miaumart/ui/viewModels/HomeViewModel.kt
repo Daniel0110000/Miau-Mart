@@ -36,7 +36,7 @@ class HomeViewModel
             when (val products = productsRepository.getProducts(category)){
                 is Resource.Success -> withContext(Dispatchers.Main){
                     _productsByCategory .value = products.data!!
-                    isLoading.value = true
+                    isLoading.value = false
                 }
                 is Resource.Error -> withContext(Dispatchers.Main){
                     isLoading.value = false

@@ -1,9 +1,12 @@
 package com.daniel.miaumart.ui.commons
 
+import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.daniel.miaumart.R
 import com.daniel.miaumart.domain.models.Products
 import com.daniel.miaumart.ui.adapters.RecyclerCategoryAdapter
 import com.daniel.miaumart.ui.viewModels.HomeViewModel
@@ -29,6 +32,17 @@ class ProductsByCategory constructor(
                 initRecyclerView(products)
             }
         }
+
+        viewModel.isLoading.observe(fragment.viewLifecycleOwner){ isLoading ->
+            if(isLoading){
+                fragment.requireView().findViewById<ConstraintLayout>(R.id.loading_layout).visibility = View.VISIBLE
+                recyclerView.visibility = View.GONE
+            }else{
+                fragment.requireView().findViewById<ConstraintLayout>(R.id.loading_layout).visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
+            }
+        }
+
     }
 
     private fun initRecyclerView(productsList: ArrayList<Products>) {
