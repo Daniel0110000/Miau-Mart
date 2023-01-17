@@ -10,7 +10,10 @@ import com.daniel.miaumart.R
 import com.daniel.miaumart.domain.extensions.load
 import com.daniel.miaumart.domain.models.Products
 
-class RecyclerCategoryAdapter(private val productsList: ArrayList<Products>) :
+class RecyclerCategoryAdapter(
+    private val productsList: ArrayList<Products>,
+    private val listener: ItemClickListener
+) :
     RecyclerView.Adapter<RecyclerCategoryAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -36,6 +39,11 @@ class RecyclerCategoryAdapter(private val productsList: ArrayList<Products>) :
             productImage.load(productsList[position].productImages!![0])
             productName.text = productsList[position].productName
             productPrice.text = productsList[position].productPrice
+
+            itemView.setOnClickListener {
+                listener.onItemClickListener(productsList[position].id)
+            }
+
         }
 
     }
