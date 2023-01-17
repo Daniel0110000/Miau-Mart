@@ -5,7 +5,6 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.daniel.miaumart.R
 import com.daniel.miaumart.domain.models.Products
@@ -29,7 +28,7 @@ class ProductsByCategory constructor(
     }
 
     private fun getAndDisplayProducts() {
-        //viewModel.getProductsByCategory(category)
+        viewModel.getProductsByCategory(category)
         CoroutineScope(Dispatchers.Main).launch {
             viewModel.productsByCategory.collect { products ->
                 initRecyclerView(products)

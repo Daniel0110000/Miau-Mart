@@ -7,4 +7,6 @@ interface ProductsRepository {
 
     suspend fun getProducts(category: String): Resource<ArrayList<Products>>
 
+    suspend fun getProductDetails(category: String, pid: String): Resource<Products>
+
 }

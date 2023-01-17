@@ -9,7 +9,7 @@ import com.daniel.miaumart.R
 import com.daniel.miaumart.ui.widget.BorderCardView
 import com.daniel.miaumart.domain.extensions.load
 
-class RecyclerPreviewPIAdapter(private val images: ArrayList<String>): RecyclerView.Adapter<RecyclerPreviewPIAdapter.ViewHolder>() {
+class RecyclerPreviewPIAdapter(private val images: ArrayList<String>, private val listener: ImagesItemClickListener): RecyclerView.Adapter<RecyclerPreviewPIAdapter.ViewHolder>() {
 
     private var selectedPosition = 0
 
@@ -35,6 +35,7 @@ class RecyclerPreviewPIAdapter(private val images: ArrayList<String>): RecyclerV
                 selectedPosition = position
                 notifyItemChanged(selectedPosition)
             }
+            listener.selectedImages(images[selectedPosition])
             previewProductImagesLayout.isSelected = position == selectedPosition
         }
     }

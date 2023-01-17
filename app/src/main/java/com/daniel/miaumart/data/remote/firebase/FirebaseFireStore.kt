@@ -25,3 +25,19 @@ suspend fun FirebaseFirestore.getProducts(category: String): ArrayList<Products>
             }
     }
 }
+
+suspend fun FirebaseFirestore.getProductDetails(category: String, pid: String): Products{
+    return suspendCoroutine { count ->
+        collection(category).document(pid).get()
+            .addOnSuccessListener { document ->
+                val product = Products(
+                    id = document.id,
+                    productName = document.getString("product_name").toString(),
+                    productImages = document.get("product_images") as? ArrayList<String>,
+                    productPrice = document.getString("product_price").toString()
+                )
+                println("The product name is ${product.productName}")
+                count.resume(product)
+            }
+    }
+}

@@ -2,15 +2,21 @@ package com.daniel.miaumart.ui.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.daniel.miaumart.databinding.ActivityProductDetailsBinding
+import com.daniel.miaumart.domain.extensions.load
+import com.daniel.miaumart.ui.adapters.ImagesItemClickListener
 import com.daniel.miaumart.ui.adapters.RecyclerPreviewPIAdapter
+import com.daniel.miaumart.ui.viewModels.ProductDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ProductDetails : AppCompatActivity() {
+class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
 
     private lateinit var binding: ActivityProductDetailsBinding
+
+    private val viewModel: ProductDetailsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,20 +28,31 @@ class ProductDetails : AppCompatActivity() {
     }
 
     private fun initIUI(){
+        binding.details = viewModel
         binding.backLayout.setOnClickListener { finish() }
-        initRecyclerView()
+        viewModel.getProductDetails(intent.getStringExtra("pid").toString(), intent.getStringExtra("category").toString())
+        viewModel.units.observe(this){ units -> binding.quantifyProducts.text = units.toString() }
+        viewModel.totalPrice.observe(this){ total -> binding.totalPrice.text = total.toString() }
+        viewModel.productsByID.observe(this){ product ->
+            if(product != null){
+                product.productImages?.let { initRecyclerView(it) }
+                binding.productNamePd.text = product.productName
+                binding.productPricePd.text = product.productPrice
+            }
+        }
+
     }
 
-    private fun initRecyclerView(){
+    private fun initRecyclerView(images: ArrayList<String>){
         binding.recyclerPreviewProductImages.apply {
             hasFixedSize()
             layoutManager = LinearLayoutManager(this@ProductDetails, LinearLayoutManager.HORIZONTAL, false)
-            adapter = RecyclerPreviewPIAdapter(arrayListOf(
-                "https://firebasestorage.googleapis.com/v0/b/miau-mart.appspot.com/o/foods%2Facana-bountiful-catch-gatos.png?alt=media&token=2fe738ae-e7b6-4e98-a80e-af4e7808efbf",
-                "https://firebasestorage.googleapis.com/v0/b/miau-mart.appspot.com/o/foods%2Facana-first-feast-gatitos.png?alt=media&token=183386db-9258-493b-91f4-211d8c7e1d12",
-                "https://firebasestorage.googleapis.com/v0/b/miau-mart.appspot.com/o/foods%2Facana-homestead-harvest-gatos.png?alt=media&token=9d43c32c-3240-4180-a692-f9bd60e43f53"
-            ))
+            adapter = RecyclerPreviewPIAdapter(images, this@ProductDetails)
         }
+    }
+
+    override fun selectedImages(url: String) {
+        binding.selectedProductImage.load(url)
     }
 
 
