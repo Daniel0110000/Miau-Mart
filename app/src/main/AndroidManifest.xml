@@ -16,6 +16,20 @@
         android:theme="@style/Theme.MiauMart"
         tools:targetApi="31">
         <activity
+            android:name=".ui.activities.Register"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".ui.activities.Login"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ui.activities.ProductDetails"
             android:exported="false">
             <meta-data
