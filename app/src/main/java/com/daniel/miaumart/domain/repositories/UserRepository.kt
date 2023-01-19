@@ -1,0 +1,16 @@
+package com.daniel.miaumart.domain.repositories
+
+import android.net.Uri
+import com.daniel.miaumart.data.local.room.User
+import com.daniel.miaumart.domain.utilities.Resource
+import kotlinx.coroutines.flow.Flow
+
+interface UserRepository {
+
+    suspend fun register(userData: HashMap<String, String?>, profileImage: Uri, fileName: String): Resource<String>
+
+    suspend fun login(username: String, password: String): Resource<User?>
+
+    suspend fun insertUserData(user: User)
+
+}

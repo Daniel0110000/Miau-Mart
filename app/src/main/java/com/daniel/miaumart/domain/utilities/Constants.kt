@@ -6,4 +6,8 @@ object Constants {
     const val MEDICINES = "medicines"
     const val ACCESSORIES = "accesories"
     const val TOYS = "toys"
+    const val PN = "product_name"
+    const val PI = "product_images"
+    const val PP = "product_price"
+    const val UD_DB = "user_data"
 }

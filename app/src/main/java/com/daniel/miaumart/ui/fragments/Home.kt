@@ -1,5 +1,6 @@
 package com.daniel.miaumart.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import com.daniel.miaumart.R
 import com.daniel.miaumart.databinding.FragmentHomeBinding
+import com.daniel.miaumart.ui.activities.Login
 import com.daniel.miaumart.ui.adapters.ViewPagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -29,6 +31,7 @@ class Home : Fragment() {
 
     private fun initUI(){
         initTabAndViewPager()
+        binding.profileImage.setOnClickListener { startActivity(Intent(context, Login::class.java)) }
     }
 
     private fun initTabAndViewPager(){
