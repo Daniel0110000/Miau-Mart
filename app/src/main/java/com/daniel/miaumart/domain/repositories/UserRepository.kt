@@ -13,4 +13,8 @@ interface UserRepository {
 
     suspend fun insertUserData(user: User)
 
+    fun getUserData(): Resource<Flow<List<User>>>
+
+    suspend fun getProfileImage(fileName: String): Resource<Uri>
+
 }

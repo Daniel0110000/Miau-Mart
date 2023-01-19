@@ -28,7 +28,7 @@ class ProductsByCategory constructor(
     }
 
     private fun getAndDisplayProducts() {
-        viewModel.getProductsByCategory(category)
+        //viewModel.getProductsByCategory(category)
         CoroutineScope(Dispatchers.Main).launch {
             viewModel.productsByCategory.collect { products ->
                 initRecyclerView(products)
