@@ -24,7 +24,11 @@ constructor(
 
     fun startListening(documentName: String, listener: (ArrayList<ShoppingCartML>) -> Unit) {
         viewModelScope.launch {
-            productsRepository.getAllProductsCart(true, documentName, listener)
+            try{
+                productsRepository.getAllProductsCart(true, documentName, listener)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
         }
     }
 

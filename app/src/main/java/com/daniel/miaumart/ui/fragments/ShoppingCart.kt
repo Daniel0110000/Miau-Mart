@@ -33,6 +33,9 @@ class ShoppingCart : Fragment(), CartItemClickListener {
 
     private val viewModel: ShoppingCartViewModel by viewModels()
 
+    private var thereAreProducts = false
+    private var documentExists = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,14 +56,22 @@ class ShoppingCart : Fragment(), CartItemClickListener {
         toBuy()
         binding.progressBarSc.visibility = View.VISIBLE
         binding.recyclerShoppingCart.visibility = View.GONE
-        viewModel.startListening(BasicUserData.username) { onDataRetrieved(it) }
         binding.profileImage.load(BasicUserData.profileImage)
+        viewModel.startListening(BasicUserData.username) {
+            documentExists = true
+            onDataRetrieved(it)
+        }
         viewModel.message.observe(viewLifecycleOwner) { message ->
             if (message.isNotEmpty()) {
                 Snackbar.showMessage(message, binding.shoppingCartLayout)
                 viewModel.message.value = ""
             }
         }
+        if(!documentExists) {
+            binding.progressBarSc.visibility = View.GONE
+            binding.emptyCartLayout.visibility = View.VISIBLE
+        }
+
     }
 
     override fun onDestroy() {
@@ -70,7 +81,11 @@ class ShoppingCart : Fragment(), CartItemClickListener {
 
     private fun onDataRetrieved(products: ArrayList<ShoppingCartML>) {
         if (products.isEmpty()) binding.emptyCartLayout.visibility =
-            View.VISIBLE else binding.emptyCartLayout.visibility = View.GONE
+            View.VISIBLE
+        else{
+            thereAreProducts = true
+            binding.emptyCartLayout.visibility = View.GONE
+        }
         var totalItems = 0
         var total = 0.0
         products.forEach { items ->
@@ -99,7 +114,8 @@ class ShoppingCart : Fragment(), CartItemClickListener {
         }
 
         binding.toBuyButton.setOnClickListener {
-            alertDialog()
+            if(thereAreProducts) alertDialog()
+            else viewModel.message.value = "You have no products to buy"
         }
     }
 
