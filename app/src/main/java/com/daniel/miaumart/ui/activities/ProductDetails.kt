@@ -1,5 +1,6 @@
 package com.daniel.miaumart.ui.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -8,6 +9,8 @@ import com.daniel.miaumart.databinding.ActivityProductDetailsBinding
 import com.daniel.miaumart.domain.extensions.load
 import com.daniel.miaumart.ui.adapters.ImagesItemClickListener
 import com.daniel.miaumart.ui.adapters.RecyclerPreviewPIAdapter
+import com.daniel.miaumart.ui.commons.BasicUserData
+import com.daniel.miaumart.ui.commons.Snackbar
 import com.daniel.miaumart.ui.viewModels.ProductDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -31,13 +34,21 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
         binding.details = viewModel
         binding.backLayout.setOnClickListener { finish() }
         viewModel.getProductDetails(intent.getStringExtra("pid").toString(), intent.getStringExtra("category").toString())
+        viewModel.totalPrice.observe(this){ total -> binding.totalPrice.text = "%.2f".format(total) }
         viewModel.units.observe(this){ units -> binding.quantifyProducts.text = units.toString() }
-        viewModel.totalPrice.observe(this){ total -> binding.totalPrice.text = total.toString() }
+        viewModel.message.observe(this){ message -> Snackbar.showMessage(message, binding.productDetailsLayout) }
         viewModel.productsByID.observe(this){ product ->
             if(product != null){
                 product.productImages?.let { initRecyclerView(it) }
                 binding.productNamePd.text = product.productName
                 binding.productPricePd.text = product.productPrice
+            }
+        }
+        binding.addToCard.setOnClickListener {
+            if(BasicUserData.isRegistered) viewModel.addToCard()
+            else {
+                startActivity(Intent(this, Login::class.java))
+                finish()
             }
         }
 

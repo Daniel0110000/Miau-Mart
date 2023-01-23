@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.daniel.miaumart.domain.models.Products
 import com.daniel.miaumart.domain.repositories.ProductsRepository
 import com.daniel.miaumart.domain.utilities.Resource
+import com.daniel.miaumart.ui.commons.BasicUserData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,6 +27,8 @@ class ProductDetailsViewModel
 
     val productsByID = MutableLiveData<Products?>()
 
+    val message = MutableLiveData<String>()
+
     init {
         units.value = 0
         totalPrice.value = 0.0
@@ -43,6 +46,32 @@ class ProductDetailsViewModel
                     Log.d("Exception", product.message.toString())
                 }
             }
+        }
+    }
+
+    fun addToCard(){
+        if(units.value!! > 0){
+            viewModelScope.launch(Dispatchers.IO) {
+                when (val cart = productsRepository.addToCard(BasicUserData.username, arrayListOf(
+                    productsByID.value?.productName ?: "null",
+                    productsByID.value?.productImages?.get(0) ?: "null",
+                    productsByID.value?.productPrice ?: "null",
+                    units.value.toString()
+
+                ))){
+                    is Resource.Success -> withContext(Dispatchers.Main) {
+                        if (cart.data == 1){
+                            message.value = "Product added to cart successfully!"
+                            units.value = 0
+                            totalPrice.value = 0.0
+                        }
+                        else message.value = "Error adding product to cart"
+                    }
+                    is Resource.Error -> withContext(Dispatchers.Main) { message.value = cart.message.toString() }
+                }
+            }
+        }else{
+            message.value = "You must add at least one product"
         }
     }
 

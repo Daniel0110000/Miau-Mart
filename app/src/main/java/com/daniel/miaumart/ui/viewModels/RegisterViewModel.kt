@@ -75,7 +75,7 @@ class RegisterViewModel
     }
 
     private fun isPasswordValid(): Boolean{
-        return password.value!!.length >= 0
+        return password.value!!.length >= 8
     }
 
     private fun doPasswordsMatch(): Boolean{

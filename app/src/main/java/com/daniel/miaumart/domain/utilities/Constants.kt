@@ -10,4 +10,5 @@ object Constants {
     const val PI = "product_images"
     const val PP = "product_price"
     const val UD_DB = "user_data"
+    const val SC = "shopping_cart"
 }

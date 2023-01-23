@@ -6,8 +6,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import com.daniel.miaumart.R
 import com.daniel.miaumart.databinding.ActivityLoginBinding
 import com.daniel.miaumart.ui.commons.Snackbar
+import com.daniel.miaumart.ui.fragments.Home
 import com.daniel.miaumart.ui.viewModels.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -38,7 +42,9 @@ class Login : AppCompatActivity() {
                 )
             )
         }
-        binding.backLayout.setOnClickListener { finish() }
+        binding.backLayout.setOnClickListener {
+            finish()
+        }
 
         viewModel.isLoading.observe(this) { isLoading ->
             if (isLoading) {

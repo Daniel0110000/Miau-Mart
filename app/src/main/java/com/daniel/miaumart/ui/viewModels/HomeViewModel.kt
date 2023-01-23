@@ -9,6 +9,7 @@ import com.daniel.miaumart.domain.models.Products
 import com.daniel.miaumart.domain.repositories.ProductsRepository
 import com.daniel.miaumart.domain.repositories.UserRepository
 import com.daniel.miaumart.domain.utilities.Resource
+import com.daniel.miaumart.ui.commons.BasicUserData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +32,6 @@ class HomeViewModel
 
     val isLoading = MutableLiveData<Boolean>()
     val unregisteredUser = MutableLiveData<Boolean>()
-    val username = MutableLiveData<String>()
     val profileImage = MutableLiveData<Uri?>()
 
     init {
@@ -59,9 +59,13 @@ class HomeViewModel
                 is Resource.Success -> userData.data?.collect{ data ->
                     if(data.isNotEmpty()){
                         unregisteredUser.value = false
-                        username.value = data[0].username
+                        BasicUserData.isRegistered = true
+                        BasicUserData.username = data[0].username
                         when(val image = userRepository.getProfileImage(data[0].profileImage)){
-                            is Resource.Success -> { profileImage.value = image.data }
+                            is Resource.Success -> {
+                                profileImage.value = image.data
+                                BasicUserData.profileImage = image.data.toString()
+                            }
                             is Resource.Error -> { profileImage.value = null }
                         }
                     }else{

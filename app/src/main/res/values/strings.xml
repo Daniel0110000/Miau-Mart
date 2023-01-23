@@ -38,4 +38,15 @@
     <string name="preview_of_profile_image">Preview of profile image</string>
     <string name="don_t_have_an_account">Don\'t have an account?</string>
     <string name="profile_image">Profile image</string>
+    <string name="delete_product_from_cart">Delete product from cart</string>
+    <string name="my_cart">My Cart 🛍️</string>
+    <string name="total">Total:</string>
+    <string name="to_buy">To Buy</string>
+    <string name="you_have_no_items_in_your_shopping_cart">You have no items in your shopping cart</string>
+    <string name="the_cart_is_empty">The cart is empty</string>
+    <string name="icon_to_open_purchase_design">Icon to open purchase design</string>
+    <string name="icon_to_close_purchase_design">Icon to close purchase design</string>
+    <string name="image_of_the_selected_product">Image of the selected product</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>
