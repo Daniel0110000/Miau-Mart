@@ -12,8 +12,6 @@ import com.daniel.miaumart.domain.models.FavoritesML
 
 class RecyclerFavoritesAdapter(private var favoritesList: ArrayList<FavoritesML>, private val listener: FavoritesItemClickListener): RecyclerView.Adapter<RecyclerFavoritesAdapter.ViewHolder>() {
 
-    private val originalItems: ArrayList<FavoritesML> = favoritesList
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recycler_favorites_row_design, parent, false))
     }
