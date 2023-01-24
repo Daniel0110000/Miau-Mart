@@ -1,5 +1,6 @@
 package com.daniel.miaumart.domain.repositories
 
+import com.daniel.miaumart.domain.models.FavoritesML
 import com.daniel.miaumart.domain.models.Products
 import com.daniel.miaumart.domain.models.ShoppingCartML
 import com.daniel.miaumart.domain.utilities.Resource
@@ -17,5 +18,11 @@ interface ProductsRepository {
     suspend fun deleteProductCart(documentName: String, productId: String): Resource<Int>
 
     suspend fun deleteAllProductsCart(documentName: String): Resource<Int>
+
+    suspend fun addToFavorites(documentName: String, productDates: ArrayList<String>): Resource<Int>
+
+    fun getAllProductsFavorites(runCode: Boolean, documentName: String, callback: (ArrayList<FavoritesML>) -> Unit)
+
+    suspend fun deleteFavoriteProduct(documentName: String, productId: String): Resource<Int>
 
 }

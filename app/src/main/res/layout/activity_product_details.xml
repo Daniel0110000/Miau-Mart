@@ -82,11 +82,11 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
+                        android:id="@+id/icon_favorite"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:layout_gravity="center"
-                        android:contentDescription="@string/add_to_favorites"
-                        android:src="@drawable/ic_favorite_border" />
+                        android:contentDescription="@string/add_to_favorites" />
 
                 </androidx.cardview.widget.CardView>
 

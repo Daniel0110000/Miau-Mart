@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.daniel.miaumart.R
 import com.daniel.miaumart.databinding.ActivityProductDetailsBinding
 import com.daniel.miaumart.domain.extensions.load
 import com.daniel.miaumart.ui.adapters.ImagesItemClickListener
@@ -21,6 +22,8 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
 
     private val viewModel: ProductDetailsViewModel by viewModels()
 
+    private var isFavorite = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProductDetailsBinding.inflate(layoutInflater)
@@ -32,6 +35,14 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
 
     private fun initIUI(){
         binding.details = viewModel
+        viewModel.isFavorites.observe(this){ favorite ->
+            isFavorite = favorite
+            if(favorite){
+                binding.iconFavorite.setImageResource(R.drawable.ic_favorite)
+            }else{
+                binding.iconFavorite.setImageResource(R.drawable.ic_favorite_border)
+            }
+        }
         binding.backLayout.setOnClickListener { finish() }
         viewModel.getProductDetails(intent.getStringExtra("pid").toString(), intent.getStringExtra("category").toString())
         viewModel.totalPrice.observe(this){ total -> binding.totalPrice.text = "%.2f".format(total) }
@@ -50,6 +61,10 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
                 startActivity(Intent(this, Login::class.java))
                 finish()
             }
+        }
+        binding.addFavorite.setOnClickListener {
+            if(isFavorite) viewModel.deleteFavorite()
+            else viewModel.addToFavorites()
         }
 
     }

@@ -29,7 +29,12 @@ class ProductDetailsViewModel
 
     val message = MutableLiveData<String>()
 
+    val isFavorites = MutableLiveData<Boolean>()
+
+    private val favoriteId = MutableLiveData<String>()
+
     init {
+        isFavorites.value = false
         units.value = 0
         totalPrice.value = 0.0
     }
@@ -40,11 +45,51 @@ class ProductDetailsViewModel
                 is Resource.Success -> withContext(Dispatchers.Main){
                     productsByID.value = product.data
                     price = product.data?.productPrice!!.toDouble()
+                    checkProductFavorite()
                 }
                 is Resource.Error -> {
                     productsByID.value = null
                     Log.d("Exception", product.message.toString())
                 }
+            }
+        }
+    }
+
+    private fun checkProductFavorite(){
+        productsRepository.getAllProductsFavorites(true, BasicUserData.username){ favoritesList ->
+            val favorite = favoritesList.find { it.productName == productsByID.value!!.productName }
+            if(favorite != null){
+                isFavorites.value = true
+                favoriteId.value = favorite.id
+            }else isFavorites.value = false
+        }
+    }
+
+    fun addToFavorites(){
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val favorites = productsRepository.addToFavorites(BasicUserData.username, arrayListOf(
+                productsByID.value?.id ?: "null",
+                productsByID.value?.productImages?.get(0) ?: "null",
+                productsByID.value?.productName ?: "null",
+                productsByID.value?.productPrice ?: "null"
+            ))){
+                is Resource.Success -> withContext(Dispatchers.Main){
+                    if(favorites.data == 1) message.value = "Product added to favorites successfully!"
+                    else message.value = "Error when adding the product to favorites"
+                }
+                is Resource.Error -> withContext(Dispatchers.Main){ message.value = favorites.message.toString() }
+            }
+        }
+    }
+
+    fun deleteFavorite(){
+        viewModelScope.launch(Dispatchers.IO) {
+            when(val deleteFavorite = productsRepository.deleteFavoriteProduct(BasicUserData.username, favoriteId.value.toString())){
+                is Resource.Success -> withContext(Dispatchers.Main){
+                    if(deleteFavorite.data == 1) message.value = "Product removed from favorites!"
+                    else message.value = "Failed to remove product from favorites"
+                }
+                is Resource.Error -> withContext(Dispatchers.Main){ message.value = deleteFavorite.message.toString() }
             }
         }
     }

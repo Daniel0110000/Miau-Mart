@@ -1,6 +1,7 @@
 package com.daniel.miaumart.data.repositories
 
 import com.daniel.miaumart.data.remote.firebase.*
+import com.daniel.miaumart.domain.models.FavoritesML
 import com.daniel.miaumart.domain.models.Products
 import com.daniel.miaumart.domain.models.ShoppingCartML
 import com.daniel.miaumart.domain.repositories.ProductsRepository
@@ -83,6 +84,46 @@ constructor(
         } catch (e: Exception){
             Resource.Error(
                 message = "Exception ${e.message}"
+            )
+        }
+    }
+
+    override suspend fun addToFavorites(
+        documentName: String,
+        productDates: ArrayList<String>
+    ): Resource<Int> {
+        return try{
+            Resource.Success(
+                data = firestore.addToFavorites(documentName, productDates)
+            )
+        }catch (e: Exception){
+            Resource.Error(
+                message = "Exception ${e.message}!"
+            )
+        }
+    }
+
+    override fun getAllProductsFavorites(
+        runCode: Boolean,
+        documentName: String,
+        callback: (ArrayList<FavoritesML>) -> Unit
+    ) {
+        firestore.getAllProductsFavorites(runCode, documentName){ favorites ->
+            callback(favorites)
+        }
+    }
+
+    override suspend fun deleteFavoriteProduct(
+        documentName: String,
+        productId: String
+    ): Resource<Int> {
+        return try{
+            Resource.Success(
+                data = firestore.deleteFavoriteProduct(productId, documentName)
+            )
+        } catch (e: Exception){
+            Resource.Error(
+                message = "Exception ${e.message}!"
             )
         }
     }

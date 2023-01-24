@@ -1,6 +1,7 @@
 package com.daniel.miaumart.data.remote.firebase
 
 import com.daniel.miaumart.data.local.room.User
+import com.daniel.miaumart.domain.models.FavoritesML
 import com.daniel.miaumart.domain.models.Products
 import com.daniel.miaumart.domain.models.ShoppingCartML
 import com.daniel.miaumart.domain.utilities.Constants.PI
@@ -15,6 +16,7 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.asDeferred
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -114,14 +116,14 @@ suspend fun FirebaseFirestore.addToCard(
     }
 }
 
-var listenerRegistration: ListenerRegistration? = null
+var listenerRegistrationCart: ListenerRegistration? = null
 fun FirebaseFirestore.getAllProductsCart(
     runCode: Boolean,
     documentName: String,
     listener: (ArrayList<ShoppingCartML>) -> Unit
 ) {
     if (runCode) {
-        listenerRegistration = collection(SC).document(documentName)
+        listenerRegistrationCart = collection(SC).document(documentName)
             .addSnapshotListener { document, error ->
                 if (document != null && document.exists()) {
                     val productsList: ArrayList<ShoppingCartML> = arrayListOf()
@@ -147,7 +149,7 @@ fun FirebaseFirestore.getAllProductsCart(
                 }
             }
     } else {
-        listenerRegistration?.remove()
+        listenerRegistrationCart?.remove()
     }
 }
 
@@ -169,10 +171,85 @@ suspend fun FirebaseFirestore.deleteProductCart(productId: String, documentName:
     }
 }
 
-suspend fun FirebaseFirestore.deleteAllProductCart(documentName: String): Int{
+suspend fun FirebaseFirestore.deleteAllProductCart(documentName: String): Int {
     return suspendCoroutine { count ->
         var codeResult = 0
         collection(SC).document(documentName).set(mapOf<String, Any>())
+            .addOnSuccessListener {
+                codeResult = 1
+                count.resume(codeResult)
+            }
+            .addOnFailureListener {
+                codeResult = 0
+                count.resume(codeResult)
+            }
+    }
+}
+
+suspend fun FirebaseFirestore.addToFavorites(
+    documentName: String,
+    productDates: ArrayList<String>
+): Int {
+    return suspendCoroutine { count ->
+        var codeResult = 0
+        collection("favorites").document(documentName).set(
+            hashMapOf(
+                UUID.randomUUID().toString() to productDates
+            ),
+            SetOptions.merge()
+        ).addOnSuccessListener {
+            codeResult = 1
+            count.resume(codeResult)
+        }.addOnFailureListener {
+            codeResult = 0
+            count.resume(codeResult)
+        }
+    }
+}
+
+var listenerRegistrationFavorites: ListenerRegistration? = null
+fun FirebaseFirestore.getAllProductsFavorites(
+    runCode: Boolean,
+    documentName: String,
+    listener: (ArrayList<FavoritesML>) -> Unit
+) {
+    if (runCode) {
+        listenerRegistrationFavorites = collection("favorites").document(documentName)
+            .addSnapshotListener { document, error ->
+                if (document != null && document.exists()) {
+                    val favoritesList: ArrayList<FavoritesML> = arrayListOf()
+                    val data = document.data
+                    if (data != null) {
+                        for (field in data) {
+                            val value = field.value
+                            val key = field.key
+                            if (value is ArrayList<*>) {
+                                favoritesList.add(
+                                    FavoritesML(
+                                        key,
+                                        value[0].toString(),
+                                        value[1].toString(),
+                                        value[2].toString(),
+                                        value[3].toString(),
+                                    )
+                                )
+                            }
+                        }
+                    }
+                    listener(favoritesList)
+                }
+            }
+    } else {
+        listenerRegistrationFavorites?.remove()
+    }
+}
+
+suspend fun FirebaseFirestore.deleteFavoriteProduct(productId: String, documentName: String): Int {
+    return suspendCoroutine { count ->
+        var codeResult = 0
+        collection("favorites").document(documentName).update(
+            productId, FieldValue.delete()
+        )
             .addOnSuccessListener {
                 codeResult = 1
                 count.resume(codeResult)
