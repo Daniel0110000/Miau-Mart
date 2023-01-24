@@ -5,5 +5,6 @@ data class FavoritesML(
     val productId: String,
     val productImage: String,
     val productName: String,
-    val productPrice: String
+    val productPrice: String,
+    val productCategory: String
 )

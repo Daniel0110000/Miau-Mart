@@ -49,5 +49,6 @@
     <string name="image_of_the_selected_product">Image of the selected product</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="search_here">Search here ...</string>
+    <string name="you_don_t_have_favorite_products">You don\'t have favorite products</string>
+    <string name="my_favorites">My Favorites</string>
 </resources>

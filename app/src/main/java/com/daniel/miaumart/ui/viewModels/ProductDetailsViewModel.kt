@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.daniel.miaumart.domain.models.FavoritesML
 import com.daniel.miaumart.domain.models.Products
+import com.daniel.miaumart.domain.models.ShoppingCartML
 import com.daniel.miaumart.domain.repositories.ProductsRepository
 import com.daniel.miaumart.domain.utilities.Resource
 import com.daniel.miaumart.ui.commons.BasicUserData
@@ -33,6 +35,8 @@ class ProductDetailsViewModel
 
     private val favoriteId = MutableLiveData<String>()
 
+    private var categoryG = ""
+
     init {
         isFavorites.value = false
         units.value = 0
@@ -40,12 +44,12 @@ class ProductDetailsViewModel
     }
 
     fun getProductDetails(pid: String, category: String){
+        categoryG = category
         viewModelScope.launch {
             when(val product = productsRepository.getProductDetails(category, pid)){
                 is Resource.Success -> withContext(Dispatchers.Main){
                     productsByID.value = product.data
                     price = product.data?.productPrice!!.toDouble()
-                    checkProductFavorite()
                 }
                 is Resource.Error -> {
                     productsByID.value = null
@@ -55,7 +59,7 @@ class ProductDetailsViewModel
         }
     }
 
-    private fun checkProductFavorite(){
+     fun checkProductFavorite(){
         productsRepository.getAllProductsFavorites(true, BasicUserData.username){ favoritesList ->
             val favorite = favoritesList.find { it.productName == productsByID.value!!.productName }
             if(favorite != null){
@@ -65,13 +69,20 @@ class ProductDetailsViewModel
         }
     }
 
+    fun stopListening(documentName: String, listener: (ArrayList<FavoritesML>) -> Unit) {
+        viewModelScope.launch {
+            productsRepository.getAllProductsFavorites(false, documentName, listener)
+        }
+    }
+
     fun addToFavorites(){
         viewModelScope.launch(Dispatchers.IO) {
             when (val favorites = productsRepository.addToFavorites(BasicUserData.username, arrayListOf(
                 productsByID.value?.id ?: "null",
                 productsByID.value?.productImages?.get(0) ?: "null",
                 productsByID.value?.productName ?: "null",
-                productsByID.value?.productPrice ?: "null"
+                productsByID.value?.productPrice ?: "null",
+                categoryG
             ))){
                 is Resource.Success -> withContext(Dispatchers.Main){
                     if(favorites.data == 1) message.value = "Product added to favorites successfully!"

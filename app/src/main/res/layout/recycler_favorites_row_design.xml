@@ -5,7 +5,10 @@
     android:layout_marginStart="25dp"
     android:layout_marginEnd="25dp"
     android:layout_marginTop="10dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:focusable="true">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/product_image_layout_fav"
@@ -38,7 +41,7 @@
         android:fontFamily="@font/roboto_medium"
         android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@id/product_image_layout_fav"
-        app:layout_constraintEnd_toStartOf="@id/favorite"
+        app:layout_constraintEnd_toStartOf="@id/delete_favorites"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
@@ -52,7 +55,7 @@
         app:layout_constraintStart_toEndOf="@id/product_image_layout_fav"/>
 
     <ImageView
-        android:id="@+id/favorite"
+        android:id="@+id/delete_favorites"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:src="@drawable/ic_favorite_red"

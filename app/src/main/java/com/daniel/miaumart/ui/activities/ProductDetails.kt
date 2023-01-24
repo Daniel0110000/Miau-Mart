@@ -35,14 +35,16 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
 
     private fun initIUI(){
         binding.details = viewModel
-        viewModel.isFavorites.observe(this){ favorite ->
-            isFavorite = favorite
-            if(favorite){
-                binding.iconFavorite.setImageResource(R.drawable.ic_favorite)
-            }else{
-                binding.iconFavorite.setImageResource(R.drawable.ic_favorite_border)
+        if(BasicUserData.isRegistered){
+            viewModel.isFavorites.observe(this){ favorite ->
+                isFavorite = favorite
+                if(favorite){
+                    binding.iconFavorite.setImageResource(R.drawable.ic_favorite)
+                }else{
+                    binding.iconFavorite.setImageResource(R.drawable.ic_favorite_border)
+                }
             }
-        }
+        }else binding.iconFavorite.setImageResource(R.drawable.ic_favorite_border)
         binding.backLayout.setOnClickListener { finish() }
         viewModel.getProductDetails(intent.getStringExtra("pid").toString(), intent.getStringExtra("category").toString())
         viewModel.totalPrice.observe(this){ total -> binding.totalPrice.text = "%.2f".format(total) }
@@ -63,13 +65,19 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
             }
         }
         binding.addFavorite.setOnClickListener {
-            if(isFavorite) viewModel.deleteFavorite()
-            else viewModel.addToFavorites()
+            if(BasicUserData.isRegistered){
+                if(isFavorite) viewModel.deleteFavorite()
+                else viewModel.addToFavorites()
+            }else{
+                startActivity(Intent(this, Login::class.java))
+                finish()
+            }
         }
 
     }
 
     private fun initRecyclerView(images: ArrayList<String>){
+        if(BasicUserData.isRegistered) viewModel.checkProductFavorite()
         binding.recyclerPreviewProductImages.apply {
             hasFixedSize()
             layoutManager = LinearLayoutManager(this@ProductDetails, LinearLayoutManager.HORIZONTAL, false)
@@ -79,6 +87,11 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
 
     override fun selectedImages(url: String) {
         binding.selectedProductImage.load(url)
+    }
+
+    override fun onDestroy() {
+        viewModel.stopListening(BasicUserData.username){}
+        super.onDestroy()
     }
 
 

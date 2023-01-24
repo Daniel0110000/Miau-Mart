@@ -231,6 +231,7 @@ fun FirebaseFirestore.getAllProductsFavorites(
                                         value[1].toString(),
                                         value[2].toString(),
                                         value[3].toString(),
+                                        value[4].toString()
                                     )
                                 )
                             }
