@@ -24,11 +24,6 @@ class RecyclerFavoritesAdapter(private var favoritesList: ArrayList<FavoritesML>
 
     override fun getItemCount(): Int = favoritesList.size
 
-    fun updateFavorites(favoritesList: ArrayList<FavoritesML>){
-        this.favoritesList = favoritesList
-        notifyDataSetChanged()
-    }
-
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val productName: TextView = itemView.findViewById(R.id.product_name_fav)
