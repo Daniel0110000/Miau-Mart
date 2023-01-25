@@ -51,4 +51,10 @@
     <string name="no">No</string>
     <string name="you_don_t_have_favorite_products">You don\'t have favorite products</string>
     <string name="my_favorites">My Favorites</string>
+    <string name="my_profile">My Profile 😁</string>
+    <string name="history">History</string>
+    <string name="change_profile_picture">Change profile picture</string>
+    <string name="sign_off">Sign off</string>
+    <string name="delete_history">Delete history</string>
+    <string name="quantity">Quantity:</string>
 </resources>
