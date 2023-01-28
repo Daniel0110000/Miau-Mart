@@ -2,20 +2,17 @@ package com.daniel.miaumart.ui.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.Html
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.daniel.miaumart.R
+import com.daniel.miaumart.ui.commons.AlertDialog
 import com.daniel.miaumart.databinding.FragmentShoppingCartBinding
-import com.daniel.miaumart.domain.extensions.load
+import com.daniel.miaumart.domain.extensions.loadWithGlide
 import com.daniel.miaumart.domain.models.ShoppingCartML
 import com.daniel.miaumart.ui.activities.Login
 import com.daniel.miaumart.ui.adapters.CartItemClickListener
@@ -42,8 +39,8 @@ class ShoppingCart : Fragment(), CartItemClickListener {
     ): View {
         _binding = FragmentShoppingCartBinding.inflate(inflater, container, false)
 
-        if(BasicUserData.isRegistered) initUI()
-        else{
+        if (BasicUserData.isRegistered) initUI()
+        else {
             startActivity(Intent(requireContext(), Login::class.java))
             val navController = Navigation.findNavController(requireActivity(), R.id.fragment)
             navController.popBackStack()
@@ -56,9 +53,10 @@ class ShoppingCart : Fragment(), CartItemClickListener {
         toBuy()
         binding.progressBarSc.visibility = View.VISIBLE
         binding.recyclerShoppingCart.visibility = View.GONE
-        binding.profileImage.load(BasicUserData.profileImage)
+        binding.profileImage.loadWithGlide(requireContext(), BasicUserData.profileImage)
         viewModel.startListening(BasicUserData.username) {
             documentExists = true
+            viewModel.productDates.value = it
             onDataRetrieved(it)
         }
         viewModel.message.observe(viewLifecycleOwner) { message ->
@@ -67,7 +65,7 @@ class ShoppingCart : Fragment(), CartItemClickListener {
                 viewModel.message.value = ""
             }
         }
-        if(!documentExists) {
+        if (!documentExists) {
             binding.progressBarSc.visibility = View.GONE
             binding.emptyCartLayout.visibility = View.VISIBLE
         }
@@ -82,7 +80,7 @@ class ShoppingCart : Fragment(), CartItemClickListener {
     private fun onDataRetrieved(products: ArrayList<ShoppingCartML>) {
         if (products.isEmpty()) binding.emptyCartLayout.visibility =
             View.VISIBLE
-        else{
+        else {
             thereAreProducts = true
             binding.emptyCartLayout.visibility = View.GONE
         }
@@ -114,29 +112,21 @@ class ShoppingCart : Fragment(), CartItemClickListener {
         }
 
         binding.toBuyButton.setOnClickListener {
-            if(thereAreProducts) alertDialog()
-            else viewModel.message.value = "You have no products to buy"
+            if (thereAreProducts) {
+                AlertDialog.buildAlertDialog(
+                    "Shopping Cart",
+                    "Do you want to buy the products?",
+                    requireContext()
+                ) { result ->
+                    if (result) viewModel.toBuy()
+                    else viewModel.message.value = "Purchase canceled"
+                }
+            } else viewModel.message.value = "You have no products to buy"
         }
     }
 
     override fun onDeleteItemClickListener(productId: String) {
         viewModel.deleteProductCart(BasicUserData.username, productId)
-    }
-
-    private fun alertDialog(){
-        val build = AlertDialog.Builder(requireContext())
-        val view = layoutInflater.inflate(R.layout.alert_dialog_shopping_cart, null)
-        build.setView(view)
-        val alertDialog = build.create()
-        alertDialog.show()
-        view.findViewById<Button>(R.id.positive_button).setOnClickListener {
-            viewModel.toBuy()
-            alertDialog.dismiss()
-        }
-        view.findViewById<Button>(R.id.negative_button).setOnClickListener {
-            viewModel.message.value = "Purchase canceled"
-            alertDialog.dismiss()
-        }
     }
 
 }

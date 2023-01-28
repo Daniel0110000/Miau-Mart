@@ -2,6 +2,7 @@ package com.daniel.miaumart.data.remote.firebase
 
 import com.daniel.miaumart.data.local.room.User
 import com.daniel.miaumart.domain.models.FavoritesML
+import com.daniel.miaumart.domain.models.History
 import com.daniel.miaumart.domain.models.Products
 import com.daniel.miaumart.domain.models.ShoppingCartML
 import com.daniel.miaumart.domain.utilities.Constants.PI
@@ -251,6 +252,78 @@ suspend fun FirebaseFirestore.deleteFavoriteProduct(productId: String, documentN
         collection("favorites").document(documentName).update(
             productId, FieldValue.delete()
         )
+            .addOnSuccessListener {
+                codeResult = 1
+                count.resume(codeResult)
+            }
+            .addOnFailureListener {
+                codeResult = 0
+                count.resume(codeResult)
+            }
+    }
+}
+
+suspend fun FirebaseFirestore.addToHistory(
+    documentName: String,
+    productDates: ArrayList<String>
+): Int {
+    return suspendCoroutine { count ->
+        var codeResult = 0
+        collection("history").document(documentName).set(
+            hashMapOf(
+                UUID.randomUUID().toString() to productDates
+            ),
+            SetOptions.merge()
+        ).addOnSuccessListener {
+            codeResult = 1
+            count.resume(codeResult)
+        }.addOnFailureListener {
+            codeResult = 0
+            count.resume(codeResult)
+        }
+    }
+}
+
+var listenerRegistrationHistory: ListenerRegistration? = null
+fun FirebaseFirestore.getAllHistory(
+    runCode: Boolean,
+    documentName: String,
+    listener: (ArrayList<History>) -> Unit
+) {
+    if (runCode) {
+        listenerRegistrationHistory = collection("history").document(documentName)
+            .addSnapshotListener { document, error ->
+                if (document != null && document.exists()) {
+                    val historyList: ArrayList<History> = arrayListOf()
+                    val data = document.data
+                    if (data != null) {
+                        for (field in data) {
+                            val value = field.value
+                            if (value is ArrayList<*>) {
+                                historyList.add(
+                                    History(
+                                        value[0].toString(),
+                                        value[1].toString(),
+                                        value[2].toString(),
+                                        value[3].toString(),
+                                        value[4].toString()
+                                    )
+                                )
+                            }
+                        }
+                    }
+                    listener(historyList)
+                }
+            }
+    } else {
+        listenerRegistrationHistory?.remove()
+    }
+}
+
+suspend fun FirebaseFirestore.deleteAllHistory(documentName: String): Int {
+    return suspendCoroutine { count ->
+        var codeResult = 0
+        collection("history").document(documentName).set(mapOf<String, Any>())
             .addOnSuccessListener {
                 codeResult = 1
                 count.resume(codeResult)

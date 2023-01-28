@@ -1,6 +1,7 @@
 package com.daniel.miaumart.domain.repositories
 
 import com.daniel.miaumart.domain.models.FavoritesML
+import com.daniel.miaumart.domain.models.History
 import com.daniel.miaumart.domain.models.Products
 import com.daniel.miaumart.domain.models.ShoppingCartML
 import com.daniel.miaumart.domain.utilities.Resource
@@ -24,5 +25,11 @@ interface ProductsRepository {
     fun getAllProductsFavorites(runCode: Boolean, documentName: String, callback: (ArrayList<FavoritesML>) -> Unit)
 
     suspend fun deleteFavoriteProduct(documentName: String, productId: String): Resource<Int>
+
+    suspend fun addToHistory(documentName: String, productDates: ArrayList<String>): Resource<Int>
+
+    fun getAllHistory(runCode: Boolean, documentName: String, callback: (ArrayList<History>) -> Unit)
+
+    suspend fun deleteAllHistory(documentName: String): Resource<Int>
 
 }

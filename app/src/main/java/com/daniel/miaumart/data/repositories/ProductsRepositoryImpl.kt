@@ -2,6 +2,7 @@ package com.daniel.miaumart.data.repositories
 
 import com.daniel.miaumart.data.remote.firebase.*
 import com.daniel.miaumart.domain.models.FavoritesML
+import com.daniel.miaumart.domain.models.History
 import com.daniel.miaumart.domain.models.Products
 import com.daniel.miaumart.domain.models.ShoppingCartML
 import com.daniel.miaumart.domain.repositories.ProductsRepository
@@ -124,6 +125,43 @@ constructor(
         } catch (e: Exception){
             Resource.Error(
                 message = "Exception ${e.message}!"
+            )
+        }
+    }
+
+    override suspend fun addToHistory(
+        documentName: String,
+        productDates: ArrayList<String>
+    ): Resource<Int> {
+        return try{
+            Resource.Success(
+                data = firestore.addToHistory(documentName, productDates)
+            )
+        } catch (e: Exception){
+            Resource.Error(
+                message = "Exception ${e.message}!"
+            )
+        }
+    }
+
+    override fun getAllHistory(
+        runCode: Boolean,
+        documentName: String,
+        callback: (ArrayList<History>) -> Unit
+    ) {
+        firestore.getAllHistory(runCode, documentName){ history ->
+            callback(history)
+        }
+    }
+
+    override suspend fun deleteAllHistory(documentName: String): Resource<Int> {
+        return try{
+            Resource.Success(
+                data = firestore.deleteAllHistory(documentName)
+            )
+        } catch (e: Exception){
+            Resource.Error(
+                message = "Exception ${e.message}"
             )
         }
     }

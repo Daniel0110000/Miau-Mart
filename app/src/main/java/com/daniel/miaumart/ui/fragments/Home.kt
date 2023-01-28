@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import com.daniel.miaumart.R
 import com.daniel.miaumart.databinding.FragmentHomeBinding
 import com.daniel.miaumart.domain.extensions.load
+import com.daniel.miaumart.domain.extensions.loadWithGlide
 import com.daniel.miaumart.ui.activities.Login
 import com.daniel.miaumart.ui.activities.MyProfile
 import com.daniel.miaumart.ui.adapters.ViewPagerAdapter
@@ -45,10 +46,14 @@ class Home : Fragment() {
             if (registeredUser) startActivity(Intent(context, MyProfile::class.java))
             else startActivity(Intent(context, Login::class.java))
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
         viewModel.unregisteredUser.observe(viewLifecycleOwner) { unregistered ->
             if (unregistered) {
                 binding.profileImage.setImageResource(R.drawable.ic_login)
+                registeredUser = false
             } else {
                 registeredUser = true
                 loadProfileImage()
@@ -59,7 +64,7 @@ class Home : Fragment() {
     private fun loadProfileImage() {
         viewModel.profileImage.observe(viewLifecycleOwner) { image ->
             if (image != null) {
-                binding.profileImage.load(image.toString())
+                binding.profileImage.loadWithGlide(requireContext(), image.toString())
             }
         }
     }

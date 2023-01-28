@@ -1,9 +1,6 @@
 package com.daniel.miaumart.data.local.room
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -15,4 +12,6 @@ interface UserDao {
     @Query("select * from user_data_table")
     fun getUserData(): Flow<List<User>>
 
+    @Query("delete from user_data_table where username=:username")
+    suspend fun deleteUserData(username: String)
 }

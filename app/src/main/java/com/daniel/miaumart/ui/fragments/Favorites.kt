@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.daniel.miaumart.R
 import com.daniel.miaumart.databinding.FragmentFavoritesBinding
 import com.daniel.miaumart.domain.extensions.load
+import com.daniel.miaumart.domain.extensions.loadWithGlide
 import com.daniel.miaumart.domain.models.FavoritesML
 import com.daniel.miaumart.ui.activities.Login
 import com.daniel.miaumart.ui.activities.ProductDetails
@@ -23,7 +24,7 @@ import com.daniel.miaumart.ui.viewModels.FavoritesViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class Favorites : Fragment(), FavoritesItemClickListener{
+class Favorites : Fragment(), FavoritesItemClickListener {
 
     private var _binding: FragmentFavoritesBinding? = null
     private val binding get() = _binding!!
@@ -39,8 +40,8 @@ class Favorites : Fragment(), FavoritesItemClickListener{
 
         _binding = FragmentFavoritesBinding.inflate(inflater, container, false)
 
-        if(BasicUserData.isRegistered) initUI()
-        else{
+        if (BasicUserData.isRegistered) initUI()
+        else {
             startActivity(Intent(requireContext(), Login::class.java))
             val navController = Navigation.findNavController(requireActivity(), R.id.fragment)
             navController.popBackStack()
@@ -50,46 +51,46 @@ class Favorites : Fragment(), FavoritesItemClickListener{
 
     }
 
-    private fun initUI(){
+    private fun initUI() {
         binding.progressBarFav.visibility = View.VISIBLE
         binding.recyclerFavorites.visibility = View.GONE
-        binding.profileImageFav.load(BasicUserData.profileImage)
-        viewModel.getAllProductsFavorites(BasicUserData.username){
+        binding.profileImageFav.loadWithGlide(requireContext(), BasicUserData.profileImage)
+        viewModel.getAllProductsFavorites(BasicUserData.username) {
             documentExists = true
             onDataRetrieved(it)
         }
-        viewModel.message.observe(viewLifecycleOwner){ message ->
-            if(message.isNotEmpty()){
+        viewModel.message.observe(viewLifecycleOwner) { message ->
+            if (message.isNotEmpty()) {
                 Snackbar.showMessage(message, binding.favoriteLayout)
                 viewModel.message.value = ""
             }
         }
 
-        if(!documentExists){
+        if (!documentExists) {
             binding.progressBarFav.visibility = View.GONE
             binding.emptyFavoritesLayout.visibility = View.VISIBLE
         }
 
     }
 
-    private fun onDataRetrieved(favoritesList: ArrayList<FavoritesML>){
+    private fun onDataRetrieved(favoritesList: ArrayList<FavoritesML>) {
         binding.numberFavorites.text = favoritesList.size.toString()
         binding.recyclerFavorites.apply {
             hasFixedSize()
             layoutManager = LinearLayoutManager(context)
             adapter = RecyclerFavoritesAdapter(favoritesList, this@Favorites)
         }
-        if(favoritesList.isEmpty()){
+        if (favoritesList.isEmpty()) {
             binding.emptyFavoritesLayout.visibility = View.VISIBLE
             binding.recyclerFavorites.visibility = View.GONE
-        }else{
+        } else {
             binding.emptyFavoritesLayout.visibility = View.GONE
             binding.recyclerFavorites.visibility = View.VISIBLE
         }
     }
 
     override fun onDestroy() {
-        viewModel.stopListening(BasicUserData.username){ onDataRetrieved(it) }
+        viewModel.stopListening(BasicUserData.username) { onDataRetrieved(it) }
         super.onDestroy()
     }
 

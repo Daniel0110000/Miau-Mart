@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,12 +22,13 @@ constructor(
 ) : ViewModel() {
 
     val message = MutableLiveData<String>()
+    val productDates = MutableLiveData<ArrayList<ShoppingCartML>>()
 
     fun startListening(documentName: String, listener: (ArrayList<ShoppingCartML>) -> Unit) {
         viewModelScope.launch {
-            try{
+            try {
                 productsRepository.getAllProductsCart(true, documentName, listener)
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
@@ -55,15 +57,38 @@ constructor(
         }
     }
 
-    fun toBuy(){
-        viewModelScope.launch(Dispatchers.IO) {
-            when (val allDelete = productsRepository.deleteAllProductsCart(BasicUserData.username)){
-                is Resource.Success -> withContext(Dispatchers.Main){
-                    if(allDelete.data == 1) message.value = "Successful purchase!" else message.value = "Error when buying the products"
-                }
-                is Resource.Error -> withContext(Dispatchers.Main){ message.value = allDelete.message!! }
+    fun toBuy() = viewModelScope.launch(Dispatchers.IO) { addToHistory() }
+
+    private suspend fun addToHistory() {
+        val calendar = Calendar.getInstance()
+        productDates.value?.forEach { product ->
+            productsRepository.addToHistory(
+                BasicUserData.username, arrayListOf(
+                    product.productImage,
+                    product.productName,
+                    product.productPrice,
+                    product.numberItems,
+                    "${calendar.get(Calendar.DAY_OF_MONTH)}/${calendar.get(Calendar.MONTH) + 1}/${
+                        calendar.get(
+                            Calendar.YEAR
+                        )
+                    }"
+                )
+            )
+        }
+        deleteAllProductsCart()
+    }
+
+    private suspend fun deleteAllProductsCart() {
+        when (val allDelete = productsRepository.deleteAllProductsCart(BasicUserData.username)) {
+            is Resource.Success -> withContext(Dispatchers.Main) {
+                if (allDelete.data == 1) {
+                    message.value = "Successful purchase!"
+                } else message.value = "Error when buying the products"
+            }
+            is Resource.Error -> withContext(Dispatchers.Main) {
+                message.value = allDelete.message!!
             }
         }
     }
-
 }

@@ -15,6 +15,10 @@ interface UserRepository {
 
     fun getUserData(): Resource<Flow<List<User>>>
 
+    suspend fun deleteUserData(username: String)
+
     suspend fun getProfileImage(fileName: String): Resource<Uri>
+
+    suspend fun updateProfileImage(newProfileImage: Uri, fileName: String): Resource<Int>
 
 }

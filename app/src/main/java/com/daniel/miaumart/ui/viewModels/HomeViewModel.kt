@@ -21,11 +21,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel
-    @Inject
-    constructor(
-        private val productsRepository: ProductsRepository,
-        private val userRepository: UserRepository
-    ): ViewModel() {
+@Inject
+constructor(
+    private val productsRepository: ProductsRepository,
+    private val userRepository: UserRepository
+) : ViewModel() {
 
     private val _productsByCategory = MutableStateFlow(arrayListOf<Products>())
     val productsByCategory = _productsByCategory.asStateFlow()
@@ -39,36 +39,42 @@ class HomeViewModel
         getUserData()
     }
 
-    fun getProductsByCategory(category: String){
+    fun getProductsByCategory(category: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            when (val products = productsRepository.getProducts(category)){
-                is Resource.Success -> withContext(Dispatchers.Main){
-                    _productsByCategory .value = products.data!!
+            when (val products = productsRepository.getProducts(category)) {
+                is Resource.Success -> withContext(Dispatchers.Main) {
+                    _productsByCategory.value = products.data!!
                     isLoading.value = false
                 }
-                is Resource.Error -> withContext(Dispatchers.Main){
+                is Resource.Error -> withContext(Dispatchers.Main) {
                     isLoading.value = false
                 }
             }
         }
     }
 
-    private fun getUserData(){
+    private fun getUserData() {
         viewModelScope.launch {
-            when(val userData = userRepository.getUserData()){
-                is Resource.Success -> userData.data?.collect{ data ->
-                    if(data.isNotEmpty()){
+            when (val userData = userRepository.getUserData()) {
+                is Resource.Success -> userData.data?.collect { data ->
+                    if (data.isNotEmpty()) {
                         unregisteredUser.value = false
                         BasicUserData.isRegistered = true
                         BasicUserData.username = data[0].username
-                        when(val image = userRepository.getProfileImage(data[0].profileImage)){
+                        BasicUserData.profileImageId = data[0].profileImage
+                        when (val image = userRepository.getProfileImage(data[0].profileImage)) {
                             is Resource.Success -> {
                                 profileImage.value = image.data
                                 BasicUserData.profileImage = image.data.toString()
                             }
-                            is Resource.Error -> { profileImage.value = null }
+                            is Resource.Error -> {
+                                profileImage.value = null
+                            }
                         }
-                    }else{
+                    } else {
+                        BasicUserData.isRegistered = false
+                        BasicUserData.username = ""
+                        BasicUserData.profileImage = ""
                         unregisteredUser.value = true
                     }
                 }
@@ -76,7 +82,6 @@ class HomeViewModel
             }
         }
     }
-
 
 
 }

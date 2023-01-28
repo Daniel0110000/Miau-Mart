@@ -3,10 +3,7 @@ package com.daniel.miaumart.data.repositories
 import android.net.Uri
 import com.daniel.miaumart.data.local.room.User
 import com.daniel.miaumart.data.local.room.UserDao
-import com.daniel.miaumart.data.remote.firebase.getProfileImage
-import com.daniel.miaumart.data.remote.firebase.insertImage
-import com.daniel.miaumart.data.remote.firebase.login
-import com.daniel.miaumart.data.remote.firebase.register
+import com.daniel.miaumart.data.remote.firebase.*
 import com.daniel.miaumart.domain.repositories.UserRepository
 import com.daniel.miaumart.domain.utilities.Resource
 import com.google.firebase.firestore.FirebaseFirestore
@@ -52,7 +49,11 @@ class UserRepositoryImpl
     }
 
     override suspend fun insertUserData(user: User) {
-        db.insertUserData(user)
+        try {
+            db.insertUserData(user)
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
     }
 
     override fun getUserData(): Resource<Flow<List<User>>> {
@@ -67,12 +68,32 @@ class UserRepositoryImpl
         }
     }
 
+    override suspend fun deleteUserData(username: String) {
+        try {
+            db.deleteUserData(username)
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+    }
+
     override suspend fun getProfileImage(fileName: String): Resource<Uri> {
         return try{
             Resource.Success(
                 data = store.getProfileImage(fileName)
             )
         }catch (e: Exception){
+            Resource.Error(
+                message = "Exception ${e.message}!"
+            )
+        }
+    }
+
+    override suspend fun updateProfileImage(newProfileImage: Uri, fileName: String): Resource<Int> {
+        return try{
+            Resource.Success(
+                data = store.updateProfileImage(newProfileImage, fileName)
+            )
+        } catch (e: Exception){
             Resource.Error(
                 message = "Exception ${e.message}!"
             )

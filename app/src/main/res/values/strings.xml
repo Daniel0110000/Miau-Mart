@@ -47,8 +47,6 @@
     <string name="icon_to_open_purchase_design">Icon to open purchase design</string>
     <string name="icon_to_close_purchase_design">Icon to close purchase design</string>
     <string name="image_of_the_selected_product">Image of the selected product</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
     <string name="you_don_t_have_favorite_products">You don\'t have favorite products</string>
     <string name="my_favorites">My Favorites</string>
     <string name="my_profile">My Profile 😁</string>
@@ -57,4 +55,7 @@
     <string name="sign_off">Sign off</string>
     <string name="delete_history">Delete history</string>
     <string name="quantity">Quantity:</string>
+    <string name="your_history_is_empty">Your history is empty</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>
