@@ -1,10 +1,7 @@
 package com.daniel.miaumart.data.repositories
 
 import com.daniel.miaumart.data.remote.firebase.*
-import com.daniel.miaumart.domain.models.FavoritesML
-import com.daniel.miaumart.domain.models.History
-import com.daniel.miaumart.domain.models.Products
-import com.daniel.miaumart.domain.models.ShoppingCartML
+import com.daniel.miaumart.domain.models.*
 import com.daniel.miaumart.domain.repositories.ProductsRepository
 import com.daniel.miaumart.domain.utilities.Resource
 import com.google.firebase.firestore.FirebaseFirestore
@@ -78,11 +75,11 @@ constructor(
     }
 
     override suspend fun deleteAllProductsCart(documentName: String): Resource<Int> {
-        return try{
+        return try {
             Resource.Success(
                 data = firestore.deleteAllProductCart(documentName)
             )
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Resource.Error(
                 message = "Exception ${e.message}"
             )
@@ -93,11 +90,11 @@ constructor(
         documentName: String,
         productDates: ArrayList<String>
     ): Resource<Int> {
-        return try{
+        return try {
             Resource.Success(
                 data = firestore.addToFavorites(documentName, productDates)
             )
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Resource.Error(
                 message = "Exception ${e.message}!"
             )
@@ -109,7 +106,7 @@ constructor(
         documentName: String,
         callback: (ArrayList<FavoritesML>) -> Unit
     ) {
-        firestore.getAllProductsFavorites(runCode, documentName){ favorites ->
+        firestore.getAllProductsFavorites(runCode, documentName) { favorites ->
             callback(favorites)
         }
     }
@@ -118,11 +115,11 @@ constructor(
         documentName: String,
         productId: String
     ): Resource<Int> {
-        return try{
+        return try {
             Resource.Success(
                 data = firestore.deleteFavoriteProduct(productId, documentName)
             )
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Resource.Error(
                 message = "Exception ${e.message}!"
             )
@@ -133,11 +130,11 @@ constructor(
         documentName: String,
         productDates: ArrayList<String>
     ): Resource<Int> {
-        return try{
+        return try {
             Resource.Success(
                 data = firestore.addToHistory(documentName, productDates)
             )
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Resource.Error(
                 message = "Exception ${e.message}!"
             )
@@ -149,20 +146,26 @@ constructor(
         documentName: String,
         callback: (ArrayList<History>) -> Unit
     ) {
-        firestore.getAllHistory(runCode, documentName){ history ->
+        firestore.getAllHistory(runCode, documentName) { history ->
             callback(history)
         }
     }
 
     override suspend fun deleteAllHistory(documentName: String): Resource<Int> {
-        return try{
+        return try {
             Resource.Success(
                 data = firestore.deleteAllHistory(documentName)
             )
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Resource.Error(
                 message = "Exception ${e.message}"
             )
+        }
+    }
+
+    override fun getAllProductsForSearch(listener: (ArrayList<SearchML>) -> Unit) {
+        firestore.getAllProductsForSearch { products ->
+            listener(products)
         }
     }
 

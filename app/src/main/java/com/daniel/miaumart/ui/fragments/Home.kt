@@ -14,6 +14,7 @@ import com.daniel.miaumart.domain.extensions.load
 import com.daniel.miaumart.domain.extensions.loadWithGlide
 import com.daniel.miaumart.ui.activities.Login
 import com.daniel.miaumart.ui.activities.MyProfile
+import com.daniel.miaumart.ui.activities.Search
 import com.daniel.miaumart.ui.adapters.ViewPagerAdapter
 import com.daniel.miaumart.ui.viewModels.HomeViewModel
 import com.google.android.material.tabs.TabLayoutMediator
@@ -42,6 +43,7 @@ class Home : Fragment() {
 
     private fun initUI() {
         initTabAndViewPager()
+        binding.searchLayout.setOnClickListener { startActivity(Intent(requireContext(), Search::class.java)) }
         binding.profileImageLayout.setOnClickListener {
             if (registeredUser) startActivity(Intent(context, MyProfile::class.java))
             else startActivity(Intent(context, Login::class.java))

@@ -1,14 +1,15 @@
 package com.daniel.miaumart.data.remote.firebase
 
 import com.daniel.miaumart.data.local.room.User
-import com.daniel.miaumart.domain.models.FavoritesML
-import com.daniel.miaumart.domain.models.History
-import com.daniel.miaumart.domain.models.Products
-import com.daniel.miaumart.domain.models.ShoppingCartML
+import com.daniel.miaumart.domain.models.*
+import com.daniel.miaumart.domain.utilities.Constants.ACCESSORIES
+import com.daniel.miaumart.domain.utilities.Constants.FOODS
+import com.daniel.miaumart.domain.utilities.Constants.MEDICINES
 import com.daniel.miaumart.domain.utilities.Constants.PI
 import com.daniel.miaumart.domain.utilities.Constants.PN
 import com.daniel.miaumart.domain.utilities.Constants.PP
 import com.daniel.miaumart.domain.utilities.Constants.SC
+import com.daniel.miaumart.domain.utilities.Constants.TOYS
 import com.daniel.miaumart.domain.utilities.Constants.UD_DB
 import com.daniel.miaumart.domain.utilities.SecurityService
 import com.google.firebase.firestore.FieldValue
@@ -332,5 +333,25 @@ suspend fun FirebaseFirestore.deleteAllHistory(documentName: String): Int {
                 codeResult = 0
                 count.resume(codeResult)
             }
+    }
+}
+
+fun FirebaseFirestore.getAllProductsForSearch(listener: (ArrayList<SearchML>) -> Unit) {
+    val productsList: ArrayList<SearchML> = arrayListOf()
+    listOf(FOODS, MEDICINES, ACCESSORIES, TOYS).forEach { collection ->
+        collection(collection).get().addOnSuccessListener { documents ->
+            for (document in documents) {
+                productsList.add(
+                    SearchML(
+                        productId = document.id,
+                        productName = document.getString(PN).toString(),
+                        productImages = document.get(PI) as? ArrayList<String>,
+                        productPrice = document.getString(PP).toString(),
+                        category = collection
+                    )
+                )
+            }
+            listener(productsList)
+        }
     }
 }

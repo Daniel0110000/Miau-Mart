@@ -41,18 +41,30 @@
                         android:background="@color/dark_jungle_green"
                         android:minHeight="?attr/actionBarSize">
 
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_margin="10dp"
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/search_layout"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_marginStart="10dp"
+                            android:backgroundTint="@color/rangoon_green"
                             android:clickable="true"
-                            android:contentDescription="@string/search"
                             android:focusable="true"
                             android:foreground="?attr/selectableItemBackground"
-                            android:src="@drawable/ic_search"
+                            app:cardCornerRadius="10dp"
+                            app:cardElevation="10dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <ImageView
+                                android:id="@+id/search"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:contentDescription="@string/search"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_search"/>
+
+                        </androidx.cardview.widget.CardView>
 
                         <ImageView
                             android:layout_width="32dp"
