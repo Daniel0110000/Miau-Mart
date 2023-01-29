@@ -60,4 +60,6 @@
     <string name="cancel">Cancel</string>
     <string name="search_here">Search here …</string>
     <string name="product_not_found">Product not found</string>
+    <string name="you_don_t_have_internet_access">You don\'t have internet access</string>
+    <string name="network_error">Network error</string>
 </resources>

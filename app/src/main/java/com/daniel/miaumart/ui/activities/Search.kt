@@ -1,6 +1,8 @@
 package com.daniel.miaumart.ui.activities
 
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -10,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.daniel.miaumart.R
 import com.daniel.miaumart.databinding.ActivitySearchBinding
 import com.daniel.miaumart.domain.models.SearchML
+import com.daniel.miaumart.domain.utilities.NetworkStateReceiver
 import com.daniel.miaumart.ui.adapters.RecyclerSearchAdapter
 import com.daniel.miaumart.ui.adapters.SearchItemClickListener
 import com.daniel.miaumart.ui.viewModels.SearchViewModel
@@ -19,11 +22,11 @@ import dagger.hilt.android.AndroidEntryPoint
 class Search : AppCompatActivity(), SearchItemClickListener {
 
     private lateinit var binding: ActivitySearchBinding
-
-    private val viewModel: SearchViewModel by viewModels()
-
     private lateinit var adapter: RecyclerSearchAdapter
     private lateinit var productsList: ArrayList<SearchML>
+    private lateinit var networkStateReceiver: NetworkStateReceiver
+
+    private val viewModel: SearchViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +35,13 @@ class Search : AppCompatActivity(), SearchItemClickListener {
 
         initUI()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        networkStateReceiver = NetworkStateReceiver(binding.noInternetAccessLayoutSearch)
+        val connectivity = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        registerReceiver(networkStateReceiver, connectivity)
     }
 
     private fun initUI() {
@@ -75,4 +85,8 @@ class Search : AppCompatActivity(), SearchItemClickListener {
         startActivity(productDetails)
     }
 
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(networkStateReceiver)
+    }
 }

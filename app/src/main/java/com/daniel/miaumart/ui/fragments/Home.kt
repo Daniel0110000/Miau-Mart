@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.daniel.miaumart.R
 import com.daniel.miaumart.databinding.FragmentHomeBinding
-import com.daniel.miaumart.domain.extensions.load
 import com.daniel.miaumart.domain.extensions.loadWithGlide
 import com.daniel.miaumart.ui.activities.Login
 import com.daniel.miaumart.ui.activities.MyProfile

@@ -1,6 +1,8 @@
 package com.daniel.miaumart.ui.activities
 
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -10,6 +12,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.daniel.miaumart.R
 import com.daniel.miaumart.databinding.ActivityLoginBinding
+import com.daniel.miaumart.domain.utilities.NetworkStateReceiver
 import com.daniel.miaumart.ui.commons.Snackbar
 import com.daniel.miaumart.ui.fragments.Home
 import com.daniel.miaumart.ui.viewModels.LoginViewModel
@@ -19,6 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class Login : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
+    private lateinit var networkStateReceiver: NetworkStateReceiver
 
     private val viewModel: LoginViewModel by viewModels()
 
@@ -29,6 +33,13 @@ class Login : AppCompatActivity() {
 
         initUI()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        networkStateReceiver = NetworkStateReceiver(binding.noInternetAccessLayoutLogin)
+        val connectivity = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        registerReceiver(networkStateReceiver, connectivity)
     }
 
     private fun initUI() {
@@ -70,9 +81,13 @@ class Login : AppCompatActivity() {
                     finish()
                 }
             }
-
         }
 
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(networkStateReceiver)
     }
 
 }

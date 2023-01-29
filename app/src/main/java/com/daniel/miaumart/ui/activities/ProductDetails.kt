@@ -1,6 +1,8 @@
 package com.daniel.miaumart.ui.activities
 
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -8,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.daniel.miaumart.R
 import com.daniel.miaumart.databinding.ActivityProductDetailsBinding
 import com.daniel.miaumart.domain.extensions.load
+import com.daniel.miaumart.domain.utilities.NetworkStateReceiver
 import com.daniel.miaumart.ui.adapters.ImagesItemClickListener
 import com.daniel.miaumart.ui.adapters.RecyclerPreviewPIAdapter
 import com.daniel.miaumart.ui.commons.BasicUserData
@@ -19,9 +22,9 @@ import dagger.hilt.android.AndroidEntryPoint
 class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
 
     private lateinit var binding: ActivityProductDetailsBinding
+    private lateinit var networkStateReceiver: NetworkStateReceiver
 
     private val viewModel: ProductDetailsViewModel by viewModels()
-
     private var isFavorite = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +34,13 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
 
         initIUI()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        networkStateReceiver = NetworkStateReceiver(binding.noInternetAccessLayoutPd)
+        val connectivity = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        registerReceiver(networkStateReceiver, connectivity)
     }
 
     private fun initIUI(){
@@ -89,10 +99,13 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
         binding.selectedProductImage.load(url)
     }
 
-    override fun onDestroy() {
-        viewModel.stopListening(BasicUserData.username){}
-        super.onDestroy()
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(networkStateReceiver)
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.stopListening(BasicUserData.username){}
+    }
 }

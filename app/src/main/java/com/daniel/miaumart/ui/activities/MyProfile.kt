@@ -1,6 +1,8 @@
 package com.daniel.miaumart.ui.activities
 
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
@@ -13,6 +15,7 @@ import com.daniel.miaumart.domain.extensions.load
 import com.daniel.miaumart.domain.extensions.loadWithGlide
 import com.daniel.miaumart.domain.models.FavoritesML
 import com.daniel.miaumart.domain.models.History
+import com.daniel.miaumart.domain.utilities.NetworkStateReceiver
 import com.daniel.miaumart.ui.adapters.RecyclerHistoryAdapter
 import com.daniel.miaumart.ui.commons.AlertDialog
 import com.daniel.miaumart.ui.commons.BasicUserData
@@ -24,9 +27,9 @@ import dagger.hilt.android.AndroidEntryPoint
 class MyProfile : AppCompatActivity() {
 
     private lateinit var binding: ActivityMyProfileBinding
+    private lateinit var networkStateReceiver: NetworkStateReceiver
 
     private val viewModel: MyProfileViewModel by viewModels()
-
     private var documentExists = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +39,13 @@ class MyProfile : AppCompatActivity() {
 
         initUI()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        networkStateReceiver = NetworkStateReceiver(binding.noInternetAccessLayoutMp)
+        val connectivity = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        registerReceiver(networkStateReceiver, connectivity)
     }
 
     private fun initUI() {
@@ -121,6 +131,11 @@ class MyProfile : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.stopListening(BasicUserData.username) { onDataRetrieved(it) }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(networkStateReceiver)
     }
 
 }

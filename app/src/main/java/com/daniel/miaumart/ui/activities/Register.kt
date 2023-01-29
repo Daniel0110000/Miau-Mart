@@ -1,6 +1,8 @@
 package com.daniel.miaumart.ui.activities
 
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
@@ -11,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import com.daniel.miaumart.R
 import com.daniel.miaumart.databinding.ActivityRegisterBinding
+import com.daniel.miaumart.domain.utilities.NetworkStateReceiver
 import com.daniel.miaumart.ui.commons.Snackbar
 import com.daniel.miaumart.ui.viewModels.RegisterViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,6 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class Register : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterBinding
+    private lateinit var networkStateReceiver: NetworkStateReceiver
 
     private val viewModel: RegisterViewModel by viewModels()
 
@@ -29,6 +33,13 @@ class Register : AppCompatActivity() {
 
         initUI()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        networkStateReceiver = NetworkStateReceiver(binding.noInternetAccessLayoutRegister)
+        val connectivity = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        registerReceiver(networkStateReceiver, connectivity)
     }
 
     private fun initUI(){
@@ -81,6 +92,11 @@ class Register : AppCompatActivity() {
             binding.imagePreview.setImageURI(result.data?.data)
             viewModel.profileImage.value = result.data?.data
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(networkStateReceiver)
     }
 
 }
