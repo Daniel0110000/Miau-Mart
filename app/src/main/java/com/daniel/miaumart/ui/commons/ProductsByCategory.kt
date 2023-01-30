@@ -20,6 +20,7 @@ class ProductsByCategory constructor(
     private val recyclerView: RecyclerView,
     private val viewModel: HomeViewModel,
     private val fragment: Fragment,
+    private val loadingData: View,
     private val category: String
 ) : ItemClickListener {
 
@@ -37,12 +38,10 @@ class ProductsByCategory constructor(
 
         viewModel.isLoading.observe(fragment.viewLifecycleOwner) { isLoading ->
             if (isLoading) {
-                fragment.requireView()
-                    .findViewById<ConstraintLayout>(R.id.loading_layout).visibility = View.VISIBLE
+                loadingData.visibility = View.VISIBLE
                 recyclerView.visibility = View.GONE
             } else {
-                fragment.requireView()
-                    .findViewById<ConstraintLayout>(R.id.loading_layout).visibility = View.GONE
+                loadingData.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
             }
         }

@@ -51,7 +51,6 @@ class ShoppingCart : Fragment(), CartItemClickListener {
 
     private fun initUI() {
         toBuy()
-        binding.progressBarSc.visibility = View.VISIBLE
         binding.recyclerShoppingCart.visibility = View.GONE
         binding.profileImage.loadWithGlide(requireContext(), BasicUserData.profileImage)
         viewModel.startListening(BasicUserData.username) {
@@ -65,10 +64,8 @@ class ShoppingCart : Fragment(), CartItemClickListener {
                 viewModel.message.value = ""
             }
         }
-        if (!documentExists) {
-            binding.progressBarSc.visibility = View.GONE
-            binding.emptyCartLayout.visibility = View.VISIBLE
-        }
+
+        if (!documentExists) binding.emptyCartLayout.visibility = View.VISIBLE
 
     }
 
@@ -97,7 +94,6 @@ class ShoppingCart : Fragment(), CartItemClickListener {
             layoutManager = LinearLayoutManager(context)
             adapter = RecyclerShoppingCartAdapter(products, this@ShoppingCart)
         }
-        binding.progressBarSc.visibility = View.GONE
         binding.recyclerShoppingCart.visibility = View.VISIBLE
     }
 

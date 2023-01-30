@@ -16,9 +16,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class Accessories : Fragment() {
 
-    private var _binding: FragmentAccessoriesBinding? = null
-    private val binding get() = _binding!!
-
     private val viewModel: HomeViewModel by viewModels()
 
     private lateinit var productsByCategory: ProductsByCategory
@@ -26,17 +23,19 @@ class Accessories : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentAccessoriesBinding.inflate(inflater, container, false)
+    ): View? {
+
+        val view = inflater.inflate(R.layout.fragment_accessories, container, false)
 
         productsByCategory = ProductsByCategory(
-            recyclerView = binding.recyclerAccessories,
+            recyclerView = view.findViewById(R.id.recycler_accessories),
             viewModel = viewModel,
             fragment = this,
+            loadingData = view.findViewById(R.id.loading_data_layout_accessories),
             category = ACCESSORIES
         )
 
-        return binding.root
+        return view
 
     }
 

@@ -46,7 +46,7 @@ class Search : AppCompatActivity(), SearchItemClickListener {
 
     private fun initUI() {
         binding.backLayout.setOnClickListener { finish() }
-        binding.progressBarSearch.visibility = View.VISIBLE
+        findViewById<View>(R.id.loading_data_layout_search).visibility = View.VISIBLE
         binding.recyclerSearch.visibility = View.GONE
         viewModel.allProducts.observe(this) { products ->
             if (products != null) {
@@ -74,7 +74,7 @@ class Search : AppCompatActivity(), SearchItemClickListener {
         binding.recyclerSearch.hasFixedSize()
         binding.recyclerSearch.layoutManager = GridLayoutManager(this@Search, 2)
         binding.recyclerSearch.adapter = adapter
-        binding.progressBarSearch.visibility = View.GONE
+        findViewById<View>(R.id.loading_data_layout_search).visibility = View.GONE
         binding.recyclerSearch.visibility = View.VISIBLE
     }
 

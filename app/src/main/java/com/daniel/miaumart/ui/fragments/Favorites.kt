@@ -11,7 +11,6 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.daniel.miaumart.R
 import com.daniel.miaumart.databinding.FragmentFavoritesBinding
-import com.daniel.miaumart.domain.extensions.load
 import com.daniel.miaumart.domain.extensions.loadWithGlide
 import com.daniel.miaumart.domain.models.FavoritesML
 import com.daniel.miaumart.ui.activities.Login
@@ -52,7 +51,6 @@ class Favorites : Fragment(), FavoritesItemClickListener {
     }
 
     private fun initUI() {
-        binding.progressBarFav.visibility = View.VISIBLE
         binding.recyclerFavorites.visibility = View.GONE
         binding.profileImageFav.loadWithGlide(requireContext(), BasicUserData.profileImage)
         viewModel.getAllProductsFavorites(BasicUserData.username) {
@@ -66,10 +64,7 @@ class Favorites : Fragment(), FavoritesItemClickListener {
             }
         }
 
-        if (!documentExists) {
-            binding.progressBarFav.visibility = View.GONE
-            binding.emptyFavoritesLayout.visibility = View.VISIBLE
-        }
+        if (!documentExists) binding.emptyFavoritesLayout.visibility = View.VISIBLE
 
     }
 
