@@ -40,7 +40,7 @@ class RecyclerHistoryAdapter(private val historyList: ArrayList<History>) :
             quantity.text = historyList[position].quantityProduct
             val endTotalPrice =
                 historyList[position].productPrice.toDouble() * historyList[position].quantityProduct.toInt()
-            totalPrice.text = endTotalPrice.toString()
+            totalPrice.text = "%.2f".format(endTotalPrice)
             date.text = historyList[position].date
 
         }
