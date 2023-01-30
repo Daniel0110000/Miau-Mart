@@ -9,6 +9,7 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
+import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.daniel.miaumart.R
 import com.daniel.miaumart.databinding.ActivitySearchBinding
 import com.daniel.miaumart.domain.models.SearchML
@@ -45,7 +46,10 @@ class Search : AppCompatActivity(), SearchItemClickListener {
     }
 
     private fun initUI() {
-        binding.backLayout.setOnClickListener { finish() }
+        binding.backLayout.setOnClickListener {
+            finish()
+            Animatoo.animateSlideDown(this)
+        }
         findViewById<View>(R.id.loading_data_layout_search).visibility = View.VISIBLE
         binding.recyclerSearch.visibility = View.GONE
         viewModel.allProducts.observe(this) { products ->
@@ -88,5 +92,11 @@ class Search : AppCompatActivity(), SearchItemClickListener {
     override fun onPause() {
         super.onPause()
         unregisterReceiver(networkStateReceiver)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+        Animatoo.animateSlideDown(this)
     }
 }

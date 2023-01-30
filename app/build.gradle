@@ -87,9 +87,6 @@ dependencies {
     // Activity & Fragments
     implementation 'androidx.activity:activity-ktx:1.6.1'
     implementation 'androidx.fragment:fragment-ktx:1.5.5'
-    
-    // Gif's
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
 
     // BCrypt
     implementation 'org.mindrot:jbcrypt:0.4'
@@ -102,5 +99,10 @@ dependencies {
     // Shimmer
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
+    // Animatoo
+    implementation 'com.github.AtifSayings:Animatoo:1.0.1'
+
+    // leakcanary
+    // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
 
 }

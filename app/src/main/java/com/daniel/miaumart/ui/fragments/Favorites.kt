@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.daniel.miaumart.R
 import com.daniel.miaumart.databinding.FragmentFavoritesBinding
 import com.daniel.miaumart.domain.extensions.loadWithGlide
@@ -42,6 +43,7 @@ class Favorites : Fragment(), FavoritesItemClickListener {
         if (BasicUserData.isRegistered) initUI()
         else {
             startActivity(Intent(requireContext(), Login::class.java))
+            Animatoo.animateSlideLeft(requireActivity())
             val navController = Navigation.findNavController(requireActivity(), R.id.fragment)
             navController.popBackStack()
         }
@@ -94,6 +96,7 @@ class Favorites : Fragment(), FavoritesItemClickListener {
         productsDetails.putExtra("pid", pid)
         productsDetails.putExtra("category", category)
         startActivity(productsDetails)
+        Animatoo.animateSlideLeft(requireActivity())
     }
 
     override fun onDeleteClickListener(favoriteId: String) {

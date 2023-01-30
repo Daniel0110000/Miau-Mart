@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.daniel.miaumart.R
 import com.daniel.miaumart.databinding.ActivityProductDetailsBinding
 import com.daniel.miaumart.domain.extensions.load
@@ -55,7 +56,7 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
                 }
             }
         }else binding.iconFavorite.setImageResource(R.drawable.ic_favorite_border)
-        binding.backLayout.setOnClickListener { finish() }
+        binding.backLayout.setOnClickListener { finish(); Animatoo.animateSlideRight(this) }
         viewModel.getProductDetails(intent.getStringExtra("pid").toString(), intent.getStringExtra("category").toString())
         viewModel.totalPrice.observe(this){ total -> binding.totalPrice.text = "%.2f".format(total) }
         viewModel.units.observe(this){ units -> binding.quantifyProducts.text = units.toString() }
@@ -72,6 +73,7 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
             else {
                 startActivity(Intent(this, Login::class.java))
                 finish()
+                Animatoo.animateSlideUp(this)
             }
         }
         binding.addFavorite.setOnClickListener {
@@ -81,6 +83,7 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
             }else{
                 startActivity(Intent(this, Login::class.java))
                 finish()
+                Animatoo.animateSlideUp(this)
             }
         }
 

@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.daniel.miaumart.R
 import com.daniel.miaumart.databinding.ActivityRegisterBinding
 import com.daniel.miaumart.domain.utilities.NetworkStateReceiver
@@ -46,8 +47,8 @@ class Register : AppCompatActivity() {
 
         binding.register = viewModel
 
-        binding.backLayout.setOnClickListener { finish() }
-        binding.redirectToLogin.setOnClickListener { finish() }
+        binding.backLayout.setOnClickListener { finish(); Animatoo.animateSlideRight(this) }
+        binding.redirectToLogin.setOnClickListener { finish(); Animatoo.animateSlideRight(this) }
         binding.openGallery.setOnClickListener { openGallery() }
 
         viewModel.isLoading.observe(this) { isLoading ->
@@ -97,6 +98,12 @@ class Register : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         unregisterReceiver(networkStateReceiver)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+        Animatoo.animateSlideRight(this)
     }
 
 }

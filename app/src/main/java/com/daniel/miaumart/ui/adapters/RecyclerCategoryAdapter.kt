@@ -3,6 +3,7 @@ package com.daniel.miaumart.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -39,11 +40,7 @@ class RecyclerCategoryAdapter(
             productImage.load(productsList[position].productImages!![0])
             productName.text = productsList[position].productName
             productPrice.text = productsList[position].productPrice
-
-            itemView.setOnClickListener {
-                listener.onItemClickListener(productsList[position].id)
-            }
-
+            itemView.setOnClickListener { listener.onItemClickListener(productsList[position].id) }
         }
 
     }

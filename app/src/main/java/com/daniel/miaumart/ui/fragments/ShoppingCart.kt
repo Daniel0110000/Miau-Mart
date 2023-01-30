@@ -6,9 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.daniel.miaumart.R
 import com.daniel.miaumart.ui.commons.AlertDialog
 import com.daniel.miaumart.databinding.FragmentShoppingCartBinding
@@ -42,6 +44,7 @@ class ShoppingCart : Fragment(), CartItemClickListener {
         if (BasicUserData.isRegistered) initUI()
         else {
             startActivity(Intent(requireContext(), Login::class.java))
+            Animatoo.animateSlideLeft(requireActivity())
             val navController = Navigation.findNavController(requireActivity(), R.id.fragment)
             navController.popBackStack()
         }
@@ -100,10 +103,12 @@ class ShoppingCart : Fragment(), CartItemClickListener {
     private fun toBuy() {
         binding.openToBuy.setOnClickListener {
             binding.openToBuy.visibility = View.GONE
+            binding.toBuyLayout.animation = AnimationUtils.loadAnimation(context, R.anim.open_layout_animation)
             binding.toBuyLayout.visibility = View.VISIBLE
         }
         binding.closeToBuy.setOnClickListener {
             binding.toBuyLayout.visibility = View.GONE
+            binding.toBuyLayout.animation = AnimationUtils.loadAnimation(context, R.anim.close_layout_animation)
             binding.openToBuy.visibility = View.VISIBLE
         }
 

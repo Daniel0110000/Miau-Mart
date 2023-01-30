@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.daniel.miaumart.R
 import com.daniel.miaumart.databinding.FragmentHomeBinding
 import com.daniel.miaumart.domain.extensions.loadWithGlide
@@ -42,10 +43,19 @@ class Home : Fragment() {
 
     private fun initUI() {
         initTabAndViewPager()
-        binding.searchLayout.setOnClickListener { startActivity(Intent(requireContext(), Search::class.java)) }
+        binding.searchLayout.setOnClickListener {
+            startActivity(Intent(requireContext(), Search::class.java))
+            Animatoo.animateSlideUp(requireActivity())
+        }
         binding.profileImageLayout.setOnClickListener {
-            if (registeredUser) startActivity(Intent(context, MyProfile::class.java))
-            else startActivity(Intent(context, Login::class.java))
+            if (registeredUser) {
+                startActivity(Intent(context, MyProfile::class.java))
+                Animatoo.animateSlideUp(requireActivity())
+            }
+            else {
+                startActivity(Intent(context, Login::class.java))
+                Animatoo.animateSlideUp(requireActivity())
+            }
         }
     }
 

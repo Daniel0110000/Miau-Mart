@@ -5,16 +5,12 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import com.daniel.miaumart.R
+import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.daniel.miaumart.databinding.ActivityLoginBinding
 import com.daniel.miaumart.domain.utilities.NetworkStateReceiver
 import com.daniel.miaumart.ui.commons.Snackbar
-import com.daniel.miaumart.ui.fragments.Home
 import com.daniel.miaumart.ui.viewModels.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -45,17 +41,9 @@ class Login : AppCompatActivity() {
     private fun initUI() {
 
         binding.login = viewModel
-        binding.redirectToRegister.setOnClickListener {
-            startActivity(
-                Intent(
-                    this,
-                    Register::class.java
-                )
-            )
-        }
-        binding.backLayout.setOnClickListener {
-            finish()
-        }
+        binding.redirectToRegister.setOnClickListener { startActivity(Intent(this, Register::class.java)); Animatoo.animateSlideLeft(this) }
+
+        binding.backLayout.setOnClickListener { finish(); Animatoo.animateSlideDown(this) }
 
         viewModel.isLoading.observe(this) { isLoading ->
             if (isLoading) {
@@ -79,6 +67,7 @@ class Login : AppCompatActivity() {
                     binding.inputPassword.text.clear()
                     viewModel.completed.value = false
                     finish()
+                    Animatoo.animateSlideDown(this)
                 }
             }
         }
@@ -88,6 +77,12 @@ class Login : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         unregisterReceiver(networkStateReceiver)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+        Animatoo.animateSlideDown(this)
     }
 
 }

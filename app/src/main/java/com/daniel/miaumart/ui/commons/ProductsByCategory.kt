@@ -2,11 +2,10 @@ package com.daniel.miaumart.ui.commons
 
 import android.content.Intent
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.daniel.miaumart.R
+import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.daniel.miaumart.domain.models.Products
 import com.daniel.miaumart.ui.activities.ProductDetails
 import com.daniel.miaumart.ui.adapters.ItemClickListener
@@ -61,5 +60,6 @@ class ProductsByCategory constructor(
         productDetails.putExtra("pid", pid)
         productDetails.putExtra("category", category)
         fragment.requireContext().startActivity(productDetails)
+        Animatoo.animateSlideLeft(fragment.requireActivity())
     }
 }

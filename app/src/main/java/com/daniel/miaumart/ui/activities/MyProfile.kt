@@ -10,10 +10,9 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.daniel.miaumart.databinding.ActivityMyProfileBinding
-import com.daniel.miaumart.domain.extensions.load
 import com.daniel.miaumart.domain.extensions.loadWithGlide
-import com.daniel.miaumart.domain.models.FavoritesML
 import com.daniel.miaumart.domain.models.History
 import com.daniel.miaumart.domain.utilities.NetworkStateReceiver
 import com.daniel.miaumart.ui.adapters.RecyclerHistoryAdapter
@@ -49,7 +48,10 @@ class MyProfile : AppCompatActivity() {
     }
 
     private fun initUI() {
-        binding.backLayout.setOnClickListener { finish() }
+        binding.backLayout.setOnClickListener {
+            finish()
+            Animatoo.animateSlideDown(this)
+        }
         binding.profileImageMp.loadWithGlide(this, BasicUserData.profileImage)
         binding.username.text = BasicUserData.username
         viewModel.completed.observe(this) { completed -> if (completed) finish() }
@@ -136,6 +138,12 @@ class MyProfile : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         unregisterReceiver(networkStateReceiver)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+        Animatoo.animateSlideDown(this)
     }
 
 }
