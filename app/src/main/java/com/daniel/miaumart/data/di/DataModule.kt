@@ -34,5 +34,4 @@ object DataModule {
             "user_data.db"
         ).allowMainThreadQueries().build().getUserDao()
     }
-
 }

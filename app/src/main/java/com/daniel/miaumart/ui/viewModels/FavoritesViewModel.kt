@@ -35,13 +35,18 @@ class FavoritesViewModel
     }
 
     fun deleteFavorite(favoriteId: String){
-        viewModelScope.launch(Dispatchers.IO) {
-            when(val deleteFavorite = productsRepository.deleteFavoriteProduct(BasicUserData.username, favoriteId)){
-                is Resource.Success -> withContext(Dispatchers.Main){
-                    if(deleteFavorite.data == 1) message.value = "Product removed from favorites!"
-                    else message.value = "Failed to remove product from favorites"
+        viewModelScope.launch {
+            try {
+                val deleteFavorite = productsRepository.deleteFavoriteProduct(BasicUserData.username, favoriteId)
+                withContext(Dispatchers.Main) {
+                    when (deleteFavorite) {
+                        is Resource.Success -> deleteFavorite.data?.let { message.postValue("Product removed from favorites!") }
+                            ?: message.postValue("Failed to remove product from favorites")
+                        is Resource.Error -> message.value = deleteFavorite.message.toString()
+                    }
                 }
-                is Resource.Error -> withContext(Dispatchers.Main){ message.value = deleteFavorite.message.toString() }
+            } catch (e: Exception){
+                withContext(Dispatchers.Main){ message.value = "Failed to remove product from favorites" }
             }
         }
     }

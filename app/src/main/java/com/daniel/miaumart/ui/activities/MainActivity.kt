@@ -4,6 +4,7 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.daniel.miaumart.R

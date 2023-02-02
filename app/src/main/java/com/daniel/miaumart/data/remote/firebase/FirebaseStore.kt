@@ -10,21 +10,10 @@ suspend fun FirebaseStorage.getProfileImage(fileName: String): Uri {
     return getReference("profile_images/$fileName").downloadUrl.await()
 }
 
-fun FirebaseStorage.insertImage(image: Uri, fileName: String) {
-    getReference("profile_images").child(fileName).putFile(image)
-}
-
-suspend fun FirebaseStorage.updateProfileImage(image: Uri, fileName: String): Int {
+suspend fun FirebaseStorage.updateOrInsertProfileImage(image: Uri, fileName: String): Boolean{
     return suspendCoroutine { count ->
-        var codeResult = 0
-        getReference("profile_images/$fileName").putFile(image)
-            .addOnSuccessListener {
-                codeResult = 1
-                count.resume(codeResult)
-            }
-            .addOnFailureListener {
-                codeResult = 0
-                count.resume(codeResult)
-            }
+        getReference("profile_images").child(fileName).putFile(image)
+            .addOnSuccessListener { count.resume(true) }
+            .addOnFailureListener { count.resume(false) }
     }
 }

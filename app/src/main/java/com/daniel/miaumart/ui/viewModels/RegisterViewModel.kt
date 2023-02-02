@@ -31,39 +31,35 @@ class RegisterViewModel
 
     fun register(){
         isLoading.value = true
-        when {
-            !areFieldsValid() -> {
-                message.value = "Incomplete fields!"
-                isLoading.value = false
-            }
-            !isPasswordValid() -> {
-                message.value = "Password too short!"
-                isLoading.value = false
-            }
-            !doPasswordsMatch() ->{
-                message.value = "Passwords do not match!"
-                isLoading.value = false
-            }
-            else -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    val fileName = UUID.randomUUID().toString()
-                    val userData = hashMapOf(
-                        "username" to username.value,
-                        "password" to SecurityService.passwordHasher(password.value.toString()),
-                        "profile_image" to fileName
-                    )
-                    when (val register = userRepository.register(userData, profileImage.value!!, fileName)){
-                        is Resource.Success -> withContext(Dispatchers.Main){
-                            message.value = register.data!!
-                            isLoading.value = false
-                            if(register.data.contains("Successfully registered user!")){
-                                completed.value = true
-                            }
-                        }
-                        is Resource.Error -> withContext(Dispatchers.Main){
-                            message.value = register.message!!
-                            isLoading.value = false
-                        }
+        if(!areFieldsValid()) {
+            message.value = "Incomplete fields!"
+            isLoading.value = false
+        }
+        else if (!isPasswordValid()){
+            message.value = "Password too short!"
+            isLoading.value = false
+        }
+        else if (!doPasswordsMatch()) {
+            message.value = "Passwords do not match!"
+            isLoading.value = false
+        }
+        else{
+            viewModelScope.launch(Dispatchers.IO) {
+                val fileName = UUID.randomUUID().toString()
+                val userData = hashMapOf(
+                    "username" to username.value,
+                    "password" to SecurityService.passwordHasher(password.value.toString()),
+                    "profile_image" to fileName
+                )
+                when (val register = userRepository.register(userData, profileImage.value!!, fileName)){
+                    is Resource.Success -> withContext(Dispatchers.Main){
+                        message.value = register.data!!
+                        if(register.data.contains("Successfully registered user!")) completed.value = true
+                        isLoading.value = false
+                    }
+                    is Resource.Error -> withContext(Dispatchers.Main){
+                        message.value = register.message!!
+                        isLoading.value = false
                     }
                 }
             }

@@ -35,6 +35,9 @@ class ShoppingCart : Fragment(), CartItemClickListener {
     private var thereAreProducts = false
     private var documentExists = false
 
+    private var isToBuyLayoutVisible = false
+    private var desiredToBuyLayoutVisibility = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -78,12 +81,13 @@ class ShoppingCart : Fragment(), CartItemClickListener {
     }
 
     private fun onDataRetrieved(products: ArrayList<ShoppingCartML>) {
-        if (products.isEmpty()) binding.emptyCartLayout.visibility =
-            View.VISIBLE
-        else {
-            thereAreProducts = true
-            binding.emptyCartLayout.visibility = View.GONE
-        }
+        if (products.isEmpty()) binding.emptyCartLayout.visibility = View.VISIBLE
+        else { thereAreProducts = true;binding.emptyCartLayout.visibility = View.GONE }
+        calculateTotal(products)
+        setUpRecyclerView(products)
+    }
+
+    private fun calculateTotal(products: ArrayList<ShoppingCartML>){
         var totalItems = 0
         var total = 0.0
         products.forEach { items ->
@@ -92,6 +96,9 @@ class ShoppingCart : Fragment(), CartItemClickListener {
         }
         binding.numberItems.text = "$totalItems Items"
         binding.total.text = "$" + "%.2f".format(total)
+    }
+
+    private fun setUpRecyclerView(products: ArrayList<ShoppingCartML>) {
         binding.recyclerShoppingCart.apply {
             hasFixedSize()
             layoutManager = LinearLayoutManager(context)
@@ -102,14 +109,14 @@ class ShoppingCart : Fragment(), CartItemClickListener {
 
     private fun toBuy() {
         binding.openToBuy.setOnClickListener {
-            binding.openToBuy.visibility = View.GONE
-            binding.toBuyLayout.animation = AnimationUtils.loadAnimation(context, R.anim.open_layout_animation)
-            binding.toBuyLayout.visibility = View.VISIBLE
+            desiredToBuyLayoutVisibility = true
+            setAnimation(true)
+            updateToBuyLayoutVisibility()
         }
         binding.closeToBuy.setOnClickListener {
-            binding.toBuyLayout.visibility = View.GONE
-            binding.toBuyLayout.animation = AnimationUtils.loadAnimation(context, R.anim.close_layout_animation)
-            binding.openToBuy.visibility = View.VISIBLE
+            desiredToBuyLayoutVisibility = false
+            setAnimation(false)
+            updateToBuyLayoutVisibility()
         }
 
         binding.toBuyButton.setOnClickListener {
@@ -124,6 +131,21 @@ class ShoppingCart : Fragment(), CartItemClickListener {
                 }
             } else viewModel.message.value = "You have no products to buy"
         }
+    }
+
+    private fun setAnimation(isOpen: Boolean) {
+        binding.toBuyLayout.animation = if (isOpen) {
+            AnimationUtils.loadAnimation(context, R.anim.open_layout_animation)
+        } else {
+            AnimationUtils.loadAnimation(context, R.anim.close_layout_animation)
+        }
+    }
+
+    private fun updateToBuyLayoutVisibility() {
+        if (isToBuyLayoutVisible == desiredToBuyLayoutVisibility) return
+        isToBuyLayoutVisible = desiredToBuyLayoutVisibility
+        binding.toBuyLayout.visibility = if (desiredToBuyLayoutVisibility) View.VISIBLE else View.GONE
+        binding.openToBuy.visibility = if (desiredToBuyLayoutVisibility) View.GONE else View.VISIBLE
     }
 
     override fun onDeleteItemClickListener(productId: String) {

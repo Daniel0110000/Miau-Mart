@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -47,18 +48,14 @@ class Register : AppCompatActivity() {
 
         binding.register = viewModel
 
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
         binding.backLayout.setOnClickListener { finish(); Animatoo.animateSlideRight(this) }
         binding.redirectToLogin.setOnClickListener { finish(); Animatoo.animateSlideRight(this) }
         binding.openGallery.setOnClickListener { openGallery() }
 
         viewModel.isLoading.observe(this) { isLoading ->
-            if (isLoading) {
-                binding.registerProgressBar.visibility = View.VISIBLE
-                binding.registerButton.visibility = View.GONE
-            } else {
-                binding.registerProgressBar.visibility = View.GONE
-                binding.registerButton.visibility = View.VISIBLE
-            }
+            binding.registerProgressBar.visibility = if(isLoading) View.VISIBLE else View.GONE
+            binding.registerButton.visibility = if(isLoading) View.GONE else View.VISIBLE
         }
 
         viewModel.message.observe(this){ message ->
@@ -70,11 +67,13 @@ class Register : AppCompatActivity() {
 
         viewModel.completed.observe(this){ completed ->
             if(completed){
-                binding.inputUsername.text.clear()
-                binding.inputPassword.text.clear()
-                binding.inputRepeatPassword.text.clear()
-                binding.imagePreview.visibility = View.GONE
-                binding.iconAddImage.visibility = View.VISIBLE
+                binding.apply {
+                    inputUsername.text.clear()
+                    inputPassword.text.clear()
+                    inputRepeatPassword.text.clear()
+                    imagePreview.visibility = View.GONE
+                    iconAddImage.visibility = View.VISIBLE
+                }
             }
         }
 
@@ -88,9 +87,13 @@ class Register : AppCompatActivity() {
 
     private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
         if(result.resultCode == RESULT_OK){
-            binding.iconAddImage.visibility = View.GONE
-            binding.imagePreview.visibility = View.VISIBLE
-            binding.imagePreview.setImageURI(result.data?.data)
+            binding.apply {
+                iconAddImage.visibility = View.GONE
+                imagePreview.apply {
+                    visibility = View.VISIBLE
+                    setImageURI(result?.data?.data)
+                }
+            }
             viewModel.profileImage.value = result.data?.data
         }
     }
@@ -100,10 +103,13 @@ class Register : AppCompatActivity() {
         unregisterReceiver(networkStateReceiver)
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
-        Animatoo.animateSlideRight(this)
+    private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true){
+        override fun handleOnBackPressed() {
+            finish()
+            Animatoo.animateSlideRight(this@Register)
+        }
+
     }
+
 
 }

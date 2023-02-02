@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -52,15 +53,13 @@ class MyProfile : AppCompatActivity() {
             finish()
             Animatoo.animateSlideDown(this)
         }
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
         binding.profileImageMp.loadWithGlide(this, BasicUserData.profileImage)
         binding.username.text = BasicUserData.username
         viewModel.completed.observe(this) { completed -> if (completed) finish() }
         binding.changeProfileImage.setOnClickListener { openGallery() }
         viewModel.message.observe(this) { message ->
-            Snackbar.showMessage(
-                message,
-                binding.myProfileLayout
-            )
+            Snackbar.showMessage(message, binding.myProfileLayout)
         }
         viewModel.getAllHistory(BasicUserData.username) {
             viewModel.history.value = it
@@ -74,14 +73,16 @@ class MyProfile : AppCompatActivity() {
             }
         }
         binding.deleteAllHistoryLayout.setOnClickListener {
-            AlertDialog.buildAlertDialog(
-                "History",
-                "Do you want to delete your history?",
-                this
-            ) { result ->
-                if (result) viewModel.deleteAllHistory()
-                else viewModel.message.value = "History not cleared!"
-            }
+            if(viewModel.history.value?.isNotEmpty() == true){
+                AlertDialog.buildAlertDialog(
+                    "History",
+                    "Do you want to delete your history?",
+                    this
+                ) { result ->
+                    if (result) viewModel.deleteAllHistory()
+                    else viewModel.message.value = "History not cleared!"
+                }
+            }else viewModel.message.value =  "No data to delete"
         }
 
         if (!documentExists) {
@@ -116,13 +117,8 @@ class MyProfile : AppCompatActivity() {
 
     private fun onDataRetrieved(historyList: ArrayList<History>) {
         binding.numberHistoryItems.text = "(${historyList.size})"
-        if (historyList.isNotEmpty()) {
-            binding.recyclerHistory.visibility = View.VISIBLE
-            binding.emptyHistoryLayout.visibility = View.GONE
-        } else {
-            binding.recyclerHistory.visibility = View.GONE
-            binding.emptyHistoryLayout.visibility = View.VISIBLE
-        }
+        binding.recyclerHistory.visibility = if(historyList.isNotEmpty()) View.VISIBLE else View.GONE
+        binding.emptyHistoryLayout.visibility = if(historyList.isNotEmpty()) View.GONE else View.VISIBLE
         binding.recyclerHistory.apply {
             hasFixedSize()
             layoutManager = LinearLayoutManager(context)
@@ -140,10 +136,12 @@ class MyProfile : AppCompatActivity() {
         unregisterReceiver(networkStateReceiver)
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
-        Animatoo.animateSlideDown(this)
+    private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true){
+        override fun handleOnBackPressed() {
+            finish()
+            Animatoo.animateSlideDown(this@MyProfile)
+        }
+
     }
 
 }

@@ -5,6 +5,7 @@ import com.daniel.miaumart.data.local.room.User
 import com.daniel.miaumart.data.local.room.UserDao
 import com.daniel.miaumart.data.remote.firebase.*
 import com.daniel.miaumart.domain.repositories.UserRepository
+import com.daniel.miaumart.domain.utilities.CallHandler
 import com.daniel.miaumart.domain.utilities.Resource
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -19,84 +20,19 @@ class UserRepositoryImpl
         private val db: UserDao
     ): UserRepository {
 
-    override suspend fun register(
-        userData: HashMap<String, String?>,
-        profileImage: Uri,
-        fileName: String
-    ): Resource<String> {
-        return try{
-            store.insertImage(profileImage, fileName)
-            Resource.Success(
-                data = firestore.register(userData)
-            )
-        } catch (e: Exception){
-            Resource.Error(
-                message = "Exception ${e.message}!"
-            )
-        }
-    }
+    override suspend fun register(userData: HashMap<String, String?>, profileImage: Uri, fileName: String): Resource<String> =
+        CallHandler.callHandler { store.updateOrInsertProfileImage(profileImage, fileName); firestore.register(userData) }
 
-    override suspend fun login(username: String, password: String): Resource<User?> {
-        return try{
-            Resource.Success(
-                data = firestore.login(username, password)
-            )
-        } catch (e: Exception){
-            Resource.Error(
-                message = "Exception ${e.message}!"
-            )
-        }
-    }
+    override suspend fun login(username: String, password: String): Resource<User?> = CallHandler.callHandler { firestore.login(username, password) }
 
-    override suspend fun insertUserData(user: User) {
-        try {
-            db.insertUserData(user)
-        }catch (e: Exception){
-            e.printStackTrace()
-        }
-    }
+    override suspend fun insertUserData(user: User) { CallHandler.callHandler { db.insertUserData(user) } }
 
-    override fun getUserData(): Resource<Flow<List<User>>> {
-        return try{
-            Resource.Success(
-                data = db.getUserData()
-            )
-        } catch (e: Exception){
-            Resource.Error(
-                message = "Exception ${e.message}!"
-            )
-        }
-    }
+    override suspend fun getUserData(): Resource<Flow<List<User>>> = CallHandler.callHandler { db.getUserData() }
 
-    override suspend fun deleteUserData(username: String) {
-        try {
-            db.deleteUserData(username)
-        }catch (e: Exception){
-            e.printStackTrace()
-        }
-    }
+    override suspend fun deleteUserData(username: String) { CallHandler.callHandler { db.deleteUserData(username) } }
 
-    override suspend fun getProfileImage(fileName: String): Resource<Uri> {
-        return try{
-            Resource.Success(
-                data = store.getProfileImage(fileName)
-            )
-        }catch (e: Exception){
-            Resource.Error(
-                message = "Exception ${e.message}!"
-            )
-        }
-    }
+    override suspend fun getProfileImage(fileName: String): Resource<Uri> = CallHandler.callHandler { store.getProfileImage(fileName) }
 
-    override suspend fun updateProfileImage(newProfileImage: Uri, fileName: String): Resource<Int> {
-        return try{
-            Resource.Success(
-                data = store.updateProfileImage(newProfileImage, fileName)
-            )
-        } catch (e: Exception){
-            Resource.Error(
-                message = "Exception ${e.message}!"
-            )
-        }
-    }
+    override suspend fun updateProfileImage(newProfileImage: Uri, fileName: String): Resource<Boolean> =
+        CallHandler.callHandler { store.updateOrInsertProfileImage(newProfileImage, fileName) }
 }

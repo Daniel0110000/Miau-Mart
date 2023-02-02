@@ -72,17 +72,12 @@ class Favorites : Fragment(), FavoritesItemClickListener {
 
     private fun onDataRetrieved(favoritesList: ArrayList<FavoritesML>) {
         binding.numberFavorites.text = favoritesList.size.toString()
+        binding.emptyFavoritesLayout.visibility = if(favoritesList.isEmpty()) View.VISIBLE else View.GONE
         binding.recyclerFavorites.apply {
             hasFixedSize()
             layoutManager = LinearLayoutManager(context)
             adapter = RecyclerFavoritesAdapter(favoritesList, this@Favorites)
-        }
-        if (favoritesList.isEmpty()) {
-            binding.emptyFavoritesLayout.visibility = View.VISIBLE
-            binding.recyclerFavorites.visibility = View.GONE
-        } else {
-            binding.emptyFavoritesLayout.visibility = View.GONE
-            binding.recyclerFavorites.visibility = View.VISIBLE
+            visibility = if(favoritesList.isEmpty()) View.GONE else View.VISIBLE
         }
     }
 

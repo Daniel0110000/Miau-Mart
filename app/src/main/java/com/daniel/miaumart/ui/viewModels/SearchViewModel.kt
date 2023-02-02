@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.daniel.miaumart.domain.models.SearchML
 import com.daniel.miaumart.domain.repositories.ProductsRepository
+import com.daniel.miaumart.domain.utilities.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,13 +25,8 @@ constructor(
         getAllProducts()
     }
 
-    private fun getAllProducts() {
-        viewModelScope.launch {
-            productsRepository.getAllProductsForSearch { products ->
-                allProducts.value = products
-            }
-        }
-    }
+    private fun getAllProducts() =
+        viewModelScope.launch { productsRepository.getAllProductsForSearch { products -> allProducts.value = products } }
 
 
 }

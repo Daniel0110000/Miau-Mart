@@ -34,14 +34,11 @@ class MyProfileViewModel @Inject constructor(
 
     fun updateProfileImage(newProfileImage: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
-            when (val update =
-                userRepository.updateProfileImage(newProfileImage, BasicUserData.profileImageId)) {
+            when (val update = userRepository.updateProfileImage(newProfileImage, BasicUserData.profileImageId)) {
                 is Resource.Success -> withContext(Dispatchers.Main) {
-                    message.value = "Profile picture updated successfully!"
+                    message.value = if (update.data == true) "Profile picture updated successfully!" else "Could not update profile image!"
                 }
-                is Resource.Error -> withContext(Dispatchers.Main) {
-                    message.value = update.message!!
-                }
+                is Resource.Error -> withContext(Dispatchers.Main) { message.value = update.message!! }
             }
         }
     }
@@ -61,19 +58,17 @@ class MyProfileViewModel @Inject constructor(
     fun deleteAllHistory() {
         if (history.value!!.size > 0) {
             viewModelScope.launch(Dispatchers.IO) {
-                when (val deleteAllHistory =
-                    productsRepository.deleteAllHistory(BasicUserData.username)) {
+                when (val deleteAllHistory = productsRepository.deleteAllHistory(BasicUserData.username)) {
                     is Resource.Success -> withContext(Dispatchers.Main) {
-                        if (deleteAllHistory.data == 1) message.value =
-                            "History deleted successfully!" else message.value =
-                            "Error deleting history"
+                        deleteAllHistory.data!!.apply {
+                            addOnSuccessListener { message.value = "History deleted successfully!" }
+                            addOnFailureListener { message.value = "Error deleting history" }
+                        }
                     }
-                    is Resource.Error -> withContext(Dispatchers.Main) {
-                        message.value = deleteAllHistory.message.toString()
-                    }
+                    is Resource.Error -> withContext(Dispatchers.Main) { message.postValue(deleteAllHistory.message.toString()) }
                 }
             }
-        } else message.value = "No data to delete"
+        }
     }
 
 }

@@ -38,8 +38,8 @@
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/back_layout"
-                            android:layout_width="34dp"
-                            android:layout_height="32dp"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
                             android:layout_marginStart="10dp"
                             android:backgroundTint="@color/rangoon_green"
                             android:clickable="true"

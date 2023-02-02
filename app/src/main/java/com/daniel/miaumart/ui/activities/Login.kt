@@ -5,6 +5,7 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
@@ -40,19 +41,18 @@ class Login : AppCompatActivity() {
 
     private fun initUI() {
 
-        binding.login = viewModel
-        binding.redirectToRegister.setOnClickListener { startActivity(Intent(this, Register::class.java)); Animatoo.animateSlideLeft(this) }
+        binding.apply {
+            login = viewModel
+            redirectToRegister.setOnClickListener {
+                startActivity(Intent(this@Login, Register::class.java)); Animatoo.animateSlideLeft(this@Login)
+            }
+        }
 
         binding.backLayout.setOnClickListener { finish(); Animatoo.animateSlideDown(this) }
-
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
         viewModel.isLoading.observe(this) { isLoading ->
-            if (isLoading) {
-                binding.loginProgressBar.visibility = View.VISIBLE
-                binding.loginButton.visibility = View.GONE
-            } else {
-                binding.loginProgressBar.visibility = View.GONE
-                binding.loginButton.visibility = View.VISIBLE
-            }
+            binding.loginProgressBar.visibility = if(isLoading) View.VISIBLE else View.GONE
+            binding.loginButton.visibility = if(isLoading) View.GONE else View.VISIBLE
 
             viewModel.message.observe(this) { message ->
                 if (message.isNotEmpty()) {
@@ -79,10 +79,12 @@ class Login : AppCompatActivity() {
         unregisterReceiver(networkStateReceiver)
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
-        Animatoo.animateSlideDown(this)
+    private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true){
+        override fun handleOnBackPressed() {
+            finish()
+            Animatoo.animateSlideDown(this@Login)
+        }
+
     }
 
 }

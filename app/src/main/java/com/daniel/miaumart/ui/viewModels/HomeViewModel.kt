@@ -55,30 +55,46 @@ constructor(
 
     private fun getUserData() {
         viewModelScope.launch {
-            when (val userData = userRepository.getUserData()) {
-                is Resource.Success -> userData.data?.collect { data ->
-                    if (data.isNotEmpty()) {
-                        unregisteredUser.value = false
-                        BasicUserData.isRegistered = true
-                        BasicUserData.username = data[0].username
-                        BasicUserData.profileImageId = data[0].profileImage
-                        when (val image = userRepository.getProfileImage(data[0].profileImage)) {
-                            is Resource.Success -> {
-                                profileImage.value = image.data
-                                BasicUserData.profileImage = image.data.toString()
-                            }
-                            is Resource.Error -> {
-                                profileImage.value = null
-                            }
+            try {
+                when (val userData = userRepository.getUserData()) {
+                    is Resource.Success -> userData.data?.collect { data ->
+                        if (data.isNotEmpty()) {
+                            unregisteredUser.value = false
+                            BasicUserData.isRegistered = true
+                            BasicUserData.username = data[0].username
+                            BasicUserData.profileImageId = data[0].profileImage
+                            getProfileImage(data[0].profileImage)
+                        } else {
+                            unregisteredUser.value = true
+                            resetBasicUserData()
                         }
-                    } else {
-                        BasicUserData.isRegistered = false
-                        BasicUserData.username = ""
-                        BasicUserData.profileImage = ""
-                        unregisteredUser.value = true
                     }
+                    is Resource.Error -> Log.e("Exception", userData.message.toString())
                 }
-                is Resource.Error -> Log.e("Exception", userData.message.toString())
+            } catch (e: Exception) {
+                Log.e("Exception", e.message.toString())
+            }
+        }
+    }
+
+    private fun resetBasicUserData() {
+        BasicUserData.isRegistered = false
+        BasicUserData.username = ""
+        BasicUserData.profileImage = ""
+    }
+
+    private fun getProfileImage(id: String) {
+        viewModelScope.launch {
+            try {
+                when (val image = userRepository.getProfileImage(id)) {
+                    is Resource.Success -> {
+                        profileImage.value = image.data
+                        BasicUserData.profileImage = image.data.toString()
+                    }
+                    is Resource.Error -> profileImage.value = null
+                }
+            } catch (e: Exception) {
+                profileImage.value = null
             }
         }
     }

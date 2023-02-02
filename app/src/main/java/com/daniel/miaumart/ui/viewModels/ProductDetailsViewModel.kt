@@ -26,15 +26,10 @@ class ProductDetailsViewModel
     val units = MutableLiveData<Int>()
     val totalPrice = MutableLiveData<Double>()
     private var price: Double = 0.0
-
     val productsByID = MutableLiveData<Products?>()
-
     val message = MutableLiveData<String>()
-
     val isFavorites = MutableLiveData<Boolean>()
-
     private val favoriteId = MutableLiveData<String>()
-
     private var categoryG = ""
 
     init {
@@ -59,13 +54,13 @@ class ProductDetailsViewModel
         }
     }
 
-     fun checkProductFavorite(){
-        productsRepository.getAllProductsFavorites(true, BasicUserData.username){ favoritesList ->
+    fun checkProductFavorite() {
+        productsRepository.getAllProductsFavorites(true, BasicUserData.username) { favoritesList ->
             val favorite = favoritesList.find { it.productName == productsByID.value!!.productName }
-            if(favorite != null){
-                isFavorites.value = true
-                favoriteId.value = favorite.id
-            }else isFavorites.value = false
+            isFavorites.postValue(favorite != null)
+            if (favorite != null) {
+                favoriteId.postValue(favorite.id)
+            }
         }
     }
 
@@ -76,31 +71,41 @@ class ProductDetailsViewModel
     }
 
     fun addToFavorites(){
+        val product = productsByID.value
+        if (product == null) {
+            message.value = "Error adding the product to favorites"
+            return
+        }
+        val favorite = arrayListOf(
+            product.id,
+            product.productImages?.get(0) ?: "null",
+            product.productName,
+            product.productPrice,
+            categoryG
+        )
         viewModelScope.launch(Dispatchers.IO) {
-            when (val favorites = productsRepository.addToFavorites(BasicUserData.username, arrayListOf(
-                productsByID.value?.id ?: "null",
-                productsByID.value?.productImages?.get(0) ?: "null",
-                productsByID.value?.productName ?: "null",
-                productsByID.value?.productPrice ?: "null",
-                categoryG
-            ))){
-                is Resource.Success -> withContext(Dispatchers.Main){
-                    if(favorites.data == 1) message.value = "Product added to favorites successfully!"
-                    else message.value = "Error when adding the product to favorites"
+            val favorites = productsRepository.addToFavorites(BasicUserData.username, favorite)
+            withContext(Dispatchers.Main) {
+                if (favorites is Resource.Success) {
+                    favorites.data!!.apply {
+                        addOnSuccessListener { message.value = "Product added to favorites successfully!" }
+                        addOnFailureListener { message.value = "Error when adding the product to favorites" }
+                    }
+                } else if (favorites is Resource.Error) {
+                    message.value = favorites.message.toString()
                 }
-                is Resource.Error -> withContext(Dispatchers.Main){ message.value = favorites.message.toString() }
             }
         }
     }
 
-    fun deleteFavorite(){
+    fun deleteFavorite() {
         viewModelScope.launch(Dispatchers.IO) {
-            when(val deleteFavorite = productsRepository.deleteFavoriteProduct(BasicUserData.username, favoriteId.value.toString())){
-                is Resource.Success -> withContext(Dispatchers.Main){
-                    if(deleteFavorite.data == 1) message.value = "Product removed from favorites!"
-                    else message.value = "Failed to remove product from favorites"
-                }
-                is Resource.Error -> withContext(Dispatchers.Main){ message.value = deleteFavorite.message.toString() }
+            val result = productsRepository.deleteFavoriteProduct(BasicUserData.username, favoriteId.value.toString())
+            withContext(Dispatchers.Main) {
+                result.data?.apply {
+                    addOnSuccessListener { message.value = "Product removed from favorites!" }
+                    addOnFailureListener { message.value = "Failed to remove product from favorites" }
+                } ?: run { message.value = result.message.toString() }
             }
         }
     }
@@ -108,7 +113,7 @@ class ProductDetailsViewModel
     fun addToCard(){
         if(units.value!! > 0){
             viewModelScope.launch(Dispatchers.IO) {
-                when (val cart = productsRepository.addToCard(BasicUserData.username, arrayListOf(
+                when (val resource = productsRepository.addToCard(BasicUserData.username, arrayListOf(
                     productsByID.value?.productName ?: "null",
                     productsByID.value?.productImages?.get(0) ?: "null",
                     productsByID.value?.productPrice ?: "null",
@@ -116,14 +121,15 @@ class ProductDetailsViewModel
 
                 ))){
                     is Resource.Success -> withContext(Dispatchers.Main) {
-                        if (cart.data == 1){
+                        val data = resource.data!!
+                        data.addOnSuccessListener {
                             message.value = "Product added to cart successfully!"
                             units.value = 0
                             totalPrice.value = 0.0
                         }
-                        else message.value = "Error adding product to cart"
+                        data.addOnFailureListener { message.value = "Error adding product to cart" }
                     }
-                    is Resource.Error -> withContext(Dispatchers.Main) { message.value = cart.message.toString() }
+                    is Resource.Error -> withContext(Dispatchers.Main) { message.value = resource.message.toString() }
                 }
             }
         }else{

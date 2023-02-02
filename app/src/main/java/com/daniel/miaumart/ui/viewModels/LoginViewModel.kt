@@ -30,37 +30,35 @@ constructor(
     }
 
     fun login() {
+        if (!validateFields()) return
         isLoading.value = true
-        when {
-            !areFieldsValid() -> {
-                message.value = "Incomplete fields!"
-                isLoading.value = false
-            }
-            else -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    when (val login = userRepository.login(username.value!!, password.value!!)) {
-                        is Resource.Success -> withContext(Dispatchers.Main) {
-                            if (login.data != null) {
-                                isLoading.value = false
-                                userRepository.insertUserData(login.data)
-                                completed.value = true
-                            } else {
-                                message.value = "Incorrect username or password"
-                                isLoading.value = false
-                            }
-                        }
-                        is Resource.Error -> withContext(Dispatchers.Main) {
-                            message.value = login.message!!
-                            isLoading.value = false
-                        }
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val login = userRepository.login(username.value!!, password.value!!)) {
+                is Resource.Success -> withContext(Dispatchers.Main) {
+                    if (login.data != null) {
+                        userRepository.insertUserData(login.data)
+                        completed.value = true
+                    } else {
+                        message.value = "Incorrect username or password"
                     }
+                    isLoading.value = false
+                }
+                is Resource.Error -> withContext(Dispatchers.Main){
+                    message.value = login.message ?: "Error"
+                    isLoading.value = false
                 }
             }
         }
     }
 
-    private fun areFieldsValid(): Boolean {
-        return username.value!!.isNotEmpty() && password.value!!.isNotEmpty()
+    private fun validateFields(): Boolean {
+        return if (!username.value.isNullOrBlank() && !password.value.isNullOrBlank()) {
+            true
+        } else {
+            message.value = "Incomplete fields!"
+            isLoading.value = false
+            false
+        }
     }
 
 }

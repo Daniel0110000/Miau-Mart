@@ -21,5 +21,4 @@ abstract class DomainModule {
     @Binds
     @Singleton
     abstract fun providerUserRepository(userRepositoryImpl: UserRepositoryImpl): UserRepository
-
 }

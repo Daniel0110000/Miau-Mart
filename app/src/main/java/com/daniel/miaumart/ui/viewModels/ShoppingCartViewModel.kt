@@ -26,11 +26,7 @@ constructor(
 
     fun startListening(documentName: String, listener: (ArrayList<ShoppingCartML>) -> Unit) {
         viewModelScope.launch {
-            try {
-                productsRepository.getAllProductsCart(true, documentName, listener)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            try { productsRepository.getAllProductsCart(true, documentName, listener) } catch (e: Exception) { e.printStackTrace() }
         }
     }
 
@@ -44,14 +40,13 @@ constructor(
         viewModelScope.launch(Dispatchers.IO) {
             when (val delete = productsRepository.deleteProductCart(documentName, productId)) {
                 is Resource.Success -> withContext(Dispatchers.Main) {
-                    if (delete.data == 1) {
-                        message.value = "Product successfully removed!"
-                    } else {
-                        message.value = "Error deleting the product"
+                    delete.data?.apply {
+                        addOnSuccessListener { message.value = "Product successfully removed!" }
+                        addOnFailureListener { message.value = "Error deleting the product" }
                     }
                 }
                 is Resource.Error -> withContext(Dispatchers.Main) {
-                    message.value = delete.message.toString()
+                    message.value = delete.message ?: "Error deleting product!"
                 }
             }
         }
@@ -82,13 +77,12 @@ constructor(
     private suspend fun deleteAllProductsCart() {
         when (val allDelete = productsRepository.deleteAllProductsCart(BasicUserData.username)) {
             is Resource.Success -> withContext(Dispatchers.Main) {
-                if (allDelete.data == 1) {
-                    message.value = "Successful purchase!"
-                } else message.value = "Error when buying the products"
+                allDelete.data!!.apply {
+                    addOnSuccessListener {  message.value = "Successful purchase!" }
+                    addOnFailureListener { message.value = "Error when buying the products" }
+                }
             }
-            is Resource.Error -> withContext(Dispatchers.Main) {
-                message.value = allDelete.message!!
-            }
+            is Resource.Error -> withContext(Dispatchers.Main) { message.value = allDelete.message!! }
         }
     }
 }

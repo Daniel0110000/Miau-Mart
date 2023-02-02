@@ -3,7 +3,9 @@ package com.daniel.miaumart.data.remote.firebase
 import com.daniel.miaumart.data.local.room.User
 import com.daniel.miaumart.domain.models.*
 import com.daniel.miaumart.domain.utilities.Constants.ACCESSORIES
+import com.daniel.miaumart.domain.utilities.Constants.FAV
 import com.daniel.miaumart.domain.utilities.Constants.FOODS
+import com.daniel.miaumart.domain.utilities.Constants.HIS
 import com.daniel.miaumart.domain.utilities.Constants.MEDICINES
 import com.daniel.miaumart.domain.utilities.Constants.PI
 import com.daniel.miaumart.domain.utilities.Constants.PN
@@ -12,49 +14,46 @@ import com.daniel.miaumart.domain.utilities.Constants.SC
 import com.daniel.miaumart.domain.utilities.Constants.TOYS
 import com.daniel.miaumart.domain.utilities.Constants.UD_DB
 import com.daniel.miaumart.domain.utilities.SecurityService
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.asDeferred
+import kotlinx.coroutines.tasks.await
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-suspend fun FirebaseFirestore.getProducts(category: String): ArrayList<Products> {
-    val productsData: ArrayList<Products> = arrayListOf()
-    productsData.clear()
+suspend fun FirebaseFirestore.getProducts(category: String): ArrayList<Products>{
     return suspendCoroutine { count ->
-        collection(category).get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    productsData.add(
-                        Products(
-                            id = document.id,
-                            productName = document.getString(PN).toString(),
-                            productImages = document.get(PI) as? ArrayList<String>,
-                            productPrice = document.getString(PP).toString()
-                        )
+        val productsData = arrayListOf<Products>()
+        collection(category).get().addOnSuccessListener { documents ->
+            for(document in documents){
+                productsData.add(
+                    Products(
+                        id = document.id,
+                        productName = document.getString(PN).toString(),
+                        productImages = document.get(PI) as? ArrayList<String>,
+                        productPrice = document.getString(PP).toString()
                     )
-                }
-                count.resume(productsData)
+                )
             }
+            count.resume(productsData)
+        }
     }
 }
 
-suspend fun FirebaseFirestore.getProductDetails(category: String, pid: String): Products {
-    return suspendCoroutine { count ->
-        collection(category).document(pid).get()
-            .addOnSuccessListener { document ->
-                val product = Products(
-                    id = document.id,
-                    productName = document.getString(PN).toString(),
-                    productImages = document.get(PI) as? ArrayList<String>,
-                    productPrice = document.getString(PP).toString()
-                )
-                count.resume(product)
-            }
+suspend fun FirebaseFirestore.getProductDetails(category: String, pid: String): Products{
+    return collection(category).document(pid).get().await().let { document ->
+        val product = Products(
+            id = document.id,
+            productName = document.getString(PN).toString(),
+            productImages = document.get(PI) as ArrayList<String>,
+            productPrice = document.getString(PP).toString()
+        )
+        product
     }
 }
 
@@ -69,64 +68,25 @@ suspend fun FirebaseFirestore.register(userData: HashMap<String, String?>): Stri
     return "Username already registered!"
 }
 
-suspend fun FirebaseFirestore.login(username: String, password: String): User? {
-    return suspendCoroutine { count ->
-        var userData: User? = null
-        collection(UD_DB).document(username).get()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val document = task.result
-                    if (document!!.exists()) {
-                        if (SecurityService.validatePassword(
-                                password,
-                                document.getString("password").toString()
-                            )
-                        ) {
-                            userData = User(
-                                0,
-                                document.getString("username").toString(),
-                                document.getString("profile_image").toString()
-                            )
-                        }
-                    } else {
-                        userData = null
-                    }
-                }
-                count.resume(userData)
-            }
-    }
+suspend fun FirebaseFirestore.login(username: String, password: String): User?{
+    val document = collection(UD_DB).document(username).get().asDeferred().await()
+    return if(document.exists() && SecurityService.validatePassword(password, document.getString("password")!!)){
+         User(
+            0,
+            document.getString("username").toString(),
+            document.getString("profile_image").toString()
+        )
+    }else null
 }
 
-suspend fun FirebaseFirestore.addToCard(
-    documentName: String,
-    productDates: ArrayList<String>
-): Int {
-    return suspendCoroutine { count ->
-        var codeResult = 0
-        collection(SC).document(documentName).set(
-            hashMapOf(
-                UUID.randomUUID().toString() to productDates
-            ), SetOptions.merge()
-        ).addOnSuccessListener {
-            codeResult = 1
-            count.resume(codeResult)
-        }.addOnFailureListener {
-            codeResult = 0
-            println("The exception is: ${it.message}")
-            count.resume(codeResult)
-        }
-    }
-}
+fun FirebaseFirestore.addToCard(documentName: String, productDates: ArrayList<String>): Task<Void> =
+    collection(SC).document(documentName).set(mapOf(UUID.randomUUID().toString() to productDates), SetOptions.merge())
 
 var listenerRegistrationCart: ListenerRegistration? = null
-fun FirebaseFirestore.getAllProductsCart(
-    runCode: Boolean,
-    documentName: String,
-    listener: (ArrayList<ShoppingCartML>) -> Unit
-) {
+fun FirebaseFirestore.getAllProductsCart(runCode: Boolean, documentName: String, listener: (ArrayList<ShoppingCartML>) -> Unit) {
     if (runCode) {
         listenerRegistrationCart = collection(SC).document(documentName)
-            .addSnapshotListener { document, error ->
+            .addSnapshotListener { document, _ ->
                 if (document != null && document.exists()) {
                     val productsList: ArrayList<ShoppingCartML> = arrayListOf()
                     val data = document.data
@@ -134,7 +94,7 @@ fun FirebaseFirestore.getAllProductsCart(
                         for (field in data) {
                             val value = field.value
                             val key = field.key
-                            if (value is ArrayList<*>) {
+                            if (value is ArrayList<*> && value.size >= 4) {
                                 productsList.add(
                                     ShoppingCartML(
                                         key,
@@ -155,69 +115,19 @@ fun FirebaseFirestore.getAllProductsCart(
     }
 }
 
+fun FirebaseFirestore.deleteProductCart(productId: String, documentName: String): Task<Void> =
+    collection(SC).document(documentName).update(productId, FieldValue.delete())
 
-suspend fun FirebaseFirestore.deleteProductCart(productId: String, documentName: String): Int {
-    return suspendCoroutine { count ->
-        var codeResult = 0
-        collection(SC).document(documentName).update(
-            productId, FieldValue.delete()
-        )
-            .addOnSuccessListener {
-                codeResult = 1
-                count.resume(codeResult)
-            }
-            .addOnFailureListener {
-                codeResult = 0
-                count.resume(codeResult)
-            }
-    }
-}
+fun FirebaseFirestore.deleteAllProductCart(documentName: String): Task<Void> = collection(SC).document(documentName).set(mapOf<String, Any>())
 
-suspend fun FirebaseFirestore.deleteAllProductCart(documentName: String): Int {
-    return suspendCoroutine { count ->
-        var codeResult = 0
-        collection(SC).document(documentName).set(mapOf<String, Any>())
-            .addOnSuccessListener {
-                codeResult = 1
-                count.resume(codeResult)
-            }
-            .addOnFailureListener {
-                codeResult = 0
-                count.resume(codeResult)
-            }
-    }
-}
-
-suspend fun FirebaseFirestore.addToFavorites(
-    documentName: String,
-    productDates: ArrayList<String>
-): Int {
-    return suspendCoroutine { count ->
-        var codeResult = 0
-        collection("favorites").document(documentName).set(
-            hashMapOf(
-                UUID.randomUUID().toString() to productDates
-            ),
-            SetOptions.merge()
-        ).addOnSuccessListener {
-            codeResult = 1
-            count.resume(codeResult)
-        }.addOnFailureListener {
-            codeResult = 0
-            count.resume(codeResult)
-        }
-    }
-}
+fun FirebaseFirestore.addToFavorites(documentName: String, productDates: ArrayList<String>): Task<Void> =
+    collection(FAV).document(documentName).set(mapOf(UUID.randomUUID().toString() to productDates), SetOptions.merge())
 
 var listenerRegistrationFavorites: ListenerRegistration? = null
-fun FirebaseFirestore.getAllProductsFavorites(
-    runCode: Boolean,
-    documentName: String,
-    listener: (ArrayList<FavoritesML>) -> Unit
-) {
+fun FirebaseFirestore.getAllProductsFavorites(runCode: Boolean, documentName: String, listener: (ArrayList<FavoritesML>) -> Unit) {
     if (runCode) {
-        listenerRegistrationFavorites = collection("favorites").document(documentName)
-            .addSnapshotListener { document, error ->
+        listenerRegistrationFavorites = collection(FAV).document(documentName)
+            .addSnapshotListener { document, _ ->
                 if (document != null && document.exists()) {
                     val favoritesList: ArrayList<FavoritesML> = arrayListOf()
                     val data = document.data
@@ -225,7 +135,7 @@ fun FirebaseFirestore.getAllProductsFavorites(
                         for (field in data) {
                             val value = field.value
                             val key = field.key
-                            if (value is ArrayList<*>) {
+                            if (value is ArrayList<*> && value.size >= 5) {
                                 favoritesList.add(
                                     FavoritesML(
                                         key,
@@ -247,60 +157,24 @@ fun FirebaseFirestore.getAllProductsFavorites(
     }
 }
 
-suspend fun FirebaseFirestore.deleteFavoriteProduct(productId: String, documentName: String): Int {
-    return suspendCoroutine { count ->
-        var codeResult = 0
-        collection("favorites").document(documentName).update(
-            productId, FieldValue.delete()
-        )
-            .addOnSuccessListener {
-                codeResult = 1
-                count.resume(codeResult)
-            }
-            .addOnFailureListener {
-                codeResult = 0
-                count.resume(codeResult)
-            }
-    }
-}
+fun FirebaseFirestore.deleteFavoriteProduct(productId: String, documentName: String): Task<Void> =
+      collection(FAV).document(documentName).update(productId, FieldValue.delete())
 
-suspend fun FirebaseFirestore.addToHistory(
-    documentName: String,
-    productDates: ArrayList<String>
-): Int {
-    return suspendCoroutine { count ->
-        var codeResult = 0
-        collection("history").document(documentName).set(
-            hashMapOf(
-                UUID.randomUUID().toString() to productDates
-            ),
-            SetOptions.merge()
-        ).addOnSuccessListener {
-            codeResult = 1
-            count.resume(codeResult)
-        }.addOnFailureListener {
-            codeResult = 0
-            count.resume(codeResult)
-        }
-    }
-}
+fun FirebaseFirestore.addToHistory(documentName: String, productDates: ArrayList<String>): Task<Void> =
+    collection(HIS).document(documentName).set(mapOf(UUID.randomUUID().toString() to productDates), SetOptions.merge())
 
 var listenerRegistrationHistory: ListenerRegistration? = null
-fun FirebaseFirestore.getAllHistory(
-    runCode: Boolean,
-    documentName: String,
-    listener: (ArrayList<History>) -> Unit
-) {
-    if (runCode) {
-        listenerRegistrationHistory = collection("history").document(documentName)
-            .addSnapshotListener { document, error ->
-                if (document != null && document.exists()) {
-                    val historyList: ArrayList<History> = arrayListOf()
+fun FirebaseFirestore.getAllHistory(runCode: Boolean, documentName: String, listener: (ArrayList<History>) -> Unit){
+    if(runCode){
+        listenerRegistrationHistory = collection(HIS).document(documentName)
+            .addSnapshotListener { document, _ ->
+                if(document != null && document.exists()){
+                    val historyList = arrayListOf<History>()
                     val data = document.data
-                    if (data != null) {
-                        for (field in data) {
+                    if(data != null){
+                        for (field in data){
                             val value = field.value
-                            if (value is ArrayList<*>) {
+                            if(value is ArrayList<*> && value.size >= 5){
                                 historyList.add(
                                     History(
                                         value[0].toString(),
@@ -316,31 +190,20 @@ fun FirebaseFirestore.getAllHistory(
                     listener(historyList)
                 }
             }
-    } else {
+    }else{
         listenerRegistrationHistory?.remove()
     }
 }
 
-suspend fun FirebaseFirestore.deleteAllHistory(documentName: String): Int {
-    return suspendCoroutine { count ->
-        var codeResult = 0
-        collection("history").document(documentName).set(mapOf<String, Any>())
-            .addOnSuccessListener {
-                codeResult = 1
-                count.resume(codeResult)
-            }
-            .addOnFailureListener {
-                codeResult = 0
-                count.resume(codeResult)
-            }
-    }
-}
+fun FirebaseFirestore.deleteAllHistory(documentName: String): Task<Void> =collection(HIS).document(documentName).set(mapOf<String, Any>())
 
-fun FirebaseFirestore.getAllProductsForSearch(listener: (ArrayList<SearchML>) -> Unit) {
+fun FirebaseFirestore.getAllProductsForSearch(listener: (ArrayList<SearchML>) -> Unit){
+    val collections = listOf(FOODS, MEDICINES, ACCESSORIES, TOYS)
     val productsList: ArrayList<SearchML> = arrayListOf()
-    listOf(FOODS, MEDICINES, ACCESSORIES, TOYS).forEach { collection ->
+
+    collections.forEachIndexed { index, collection ->
         collection(collection).get().addOnSuccessListener { documents ->
-            for (document in documents) {
+            for(document in documents){
                 productsList.add(
                     SearchML(
                         productId = document.id,
@@ -351,7 +214,7 @@ fun FirebaseFirestore.getAllProductsForSearch(listener: (ArrayList<SearchML>) ->
                     )
                 )
             }
-            listener(productsList)
+            if(index == collections.lastIndex) listener(productsList)
         }
     }
 }

@@ -30,19 +30,12 @@ class ProductsByCategory constructor(
     private fun getAndDisplayProducts() {
         viewModel.getProductsByCategory(category)
         CoroutineScope(Dispatchers.Main).launch {
-            viewModel.productsByCategory.collect { products ->
-                initRecyclerView(products)
-            }
+            viewModel.productsByCategory.collect { products -> initRecyclerView(products) }
         }
 
         viewModel.isLoading.observe(fragment.viewLifecycleOwner) { isLoading ->
-            if (isLoading) {
-                loadingData.visibility = View.VISIBLE
-                recyclerView.visibility = View.GONE
-            } else {
-                loadingData.visibility = View.GONE
-                recyclerView.visibility = View.VISIBLE
-            }
+            loadingData.visibility = if(isLoading) View.VISIBLE else View.GONE
+            recyclerView.visibility = if(isLoading) View.GONE else View.VISIBLE
         }
 
     }
@@ -56,10 +49,12 @@ class ProductsByCategory constructor(
     }
 
     override fun onItemClickListener(pid: String) {
-        val productDetails = Intent(fragment.requireContext(), ProductDetails::class.java)
-        productDetails.putExtra("pid", pid)
-        productDetails.putExtra("category", category)
-        fragment.requireContext().startActivity(productDetails)
-        Animatoo.animateSlideLeft(fragment.requireActivity())
+        Intent(fragment.requireContext(), ProductDetails::class.java).apply {
+            putExtra("pid", pid)
+            putExtra("category", category)
+            fragment.requireContext().startActivity(this)
+            Animatoo.animateSlideLeft(fragment.requireActivity())
+
+        }
     }
 }

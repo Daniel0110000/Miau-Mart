@@ -13,12 +13,12 @@ interface UserRepository {
 
     suspend fun insertUserData(user: User)
 
-    fun getUserData(): Resource<Flow<List<User>>>
+    suspend fun getUserData(): Resource<Flow<List<User>>>
 
     suspend fun deleteUserData(username: String)
 
     suspend fun getProfileImage(fileName: String): Resource<Uri>
 
-    suspend fun updateProfileImage(newProfileImage: Uri, fileName: String): Resource<Int>
+    suspend fun updateProfileImage(newProfileImage: Uri, fileName: String): Resource<Boolean>
 
 }

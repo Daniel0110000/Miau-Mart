@@ -1,5 +1,6 @@
 package com.daniel.miaumart.ui.fragments
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -48,28 +49,23 @@ class Home : Fragment() {
             Animatoo.animateSlideUp(requireActivity())
         }
         binding.profileImageLayout.setOnClickListener {
-            if (registeredUser) {
-                startActivity(Intent(context, MyProfile::class.java))
-                Animatoo.animateSlideUp(requireActivity())
-            }
-            else {
-                startActivity(Intent(context, Login::class.java))
-                Animatoo.animateSlideUp(requireActivity())
-            }
+            if (registeredUser) startActivity(MyProfile::class.java)
+            else startActivity(Login::class.java)
         }
     }
 
     override fun onResume() {
         super.onResume()
         viewModel.unregisteredUser.observe(viewLifecycleOwner) { unregistered ->
-            if (unregistered) {
-                binding.profileImage.setImageResource(R.drawable.ic_login)
-                registeredUser = false
-            } else {
-                registeredUser = true
-                loadProfileImage()
-            }
+            registeredUser = !unregistered
+            if (unregistered) binding.profileImage.setImageResource(R.drawable.ic_login)
+            else loadProfileImage()
         }
+    }
+
+    private fun startActivity(activityClass: Class<*>){
+        startActivity(Intent(requireContext(), activityClass))
+        Animatoo.animateSlideUp(requireActivity())
     }
 
     private fun loadProfileImage() {

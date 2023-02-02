@@ -5,6 +5,7 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blogspot.atifsoftwares.animatoolib.Animatoo
@@ -45,17 +46,17 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
     }
 
     private fun initIUI(){
+
         binding.details = viewModel
+
         if(BasicUserData.isRegistered){
             viewModel.isFavorites.observe(this){ favorite ->
                 isFavorite = favorite
-                if(favorite){
-                    binding.iconFavorite.setImageResource(R.drawable.ic_favorite)
-                }else{
-                    binding.iconFavorite.setImageResource(R.drawable.ic_favorite_border)
-                }
+                binding.iconFavorite.setImageResource( if(favorite) R.drawable.ic_favorite else R.drawable.ic_favorite_border )
             }
         }else binding.iconFavorite.setImageResource(R.drawable.ic_favorite_border)
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
         binding.backLayout.setOnClickListener { finish(); Animatoo.animateSlideRight(this) }
         viewModel.getProductDetails(intent.getStringExtra("pid").toString(), intent.getStringExtra("category").toString())
         viewModel.totalPrice.observe(this){ total -> binding.totalPrice.text = "%.2f".format(total) }
@@ -68,6 +69,7 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
                 binding.productPricePd.text = product.productPrice
             }
         }
+
         binding.addToCard.setOnClickListener {
             if(BasicUserData.isRegistered) viewModel.addToCard()
             else {
@@ -98,9 +100,7 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
         }
     }
 
-    override fun selectedImages(url: String) {
-        binding.selectedProductImage.load(url)
-    }
+    override fun selectedImages(url: String) = binding.selectedProductImage.load(url)
 
     override fun onPause() {
         super.onPause()
@@ -111,4 +111,13 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
         super.onDestroy()
         viewModel.stopListening(BasicUserData.username){}
     }
+
+    private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true){
+        override fun handleOnBackPressed() {
+            finish()
+            Animatoo.animateSlideDown(this@ProductDetails)
+        }
+
+    }
+
 }

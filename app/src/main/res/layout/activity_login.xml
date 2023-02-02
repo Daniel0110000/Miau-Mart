@@ -38,171 +38,161 @@
 
         </androidx.cardview.widget.CardView>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/back_layout"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:scrollbars="none"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/back_layout"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-            <ScrollView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="none"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent">
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginTop="40dp"
+                android:paddingBottom="80dp">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:gravity="center"
-                    android:layout_marginTop="40dp"
-                    android:paddingBottom="80dp">
+                    android:layout_marginBottom="40dp">
 
-                    <LinearLayout
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginBottom="40dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/welcome_back"
-                            android:textSize="23sp"
-                            android:fontFamily="@font/roboto_medium"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/login_to_continue"
-                            android:textColor="@color/gainsboro"
-                            android:textSize="15sp"
-                            android:fontFamily="@font/roboto_medium" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center"
-                        android:layout_marginBottom="20dp">
-
-                        <ImageView
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            android:src="@drawable/ic_app"
-                            android:contentDescription="@string/app_name" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/app_name"
-                            android:textSize="16sp"
-                            android:fontFamily="@font/roboto_medium"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                    <EditText
-                        android:id="@+id/input_username"
-                        android:layout_width="wrap_content"
-                        android:layout_height="53dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginStart="10dp"
-                        android:hint="@string/username"
-                        android:textColorHint="@color/gainsboro"
-                        android:padding="10dp"
-                        android:textSize="16sp"
-                        android:minWidth="380dp"
-                        android:text="@={login.username}"
-                        android:inputType="textPersonName"
-                        android:background="@drawable/input_background"
+                        android:text="@string/welcome_back"
+                        android:textSize="23sp"
                         android:fontFamily="@font/roboto_medium"
-                        android:drawableEnd="@drawable/ic_user"
-                        android:autofillHints="name" />
+                        android:textStyle="bold" />
 
-                    <EditText
-                        android:id="@+id/input_password"
-                        android:layout_width="wrap_content"
-                        android:layout_height="53dp"
-                        android:background="@drawable/input_background"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginTop="15dp"
-                        android:hint="@string/password"
-                        android:padding="10dp"
-                        android:minWidth="380dp"
-                        android:text="@={login.password}"
-                        android:inputType="textPassword"
-                        android:textColorHint="@color/gainsboro"
-                        android:layout_marginStart="10dp"
-                        android:textSize="16sp"
-                        android:drawableEnd="@drawable/ic_password"
-                        android:fontFamily="@font/roboto_medium"
-                        android:autofillHints="password" />
-
-                    <ProgressBar
-                        android:id="@+id/login_progress_bar"
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        android:layout_marginTop="10dp"/>
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/login_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="55dp"
-                        android:backgroundTint="@color/fire_engine_red"
-                        app:cornerRadius="10dp"
-                        android:text="@string/login"
-                        android:textStyle="bold"
-                        android:minWidth="380dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="5dp"
-                        android:onClick="@{()->login.login()}"
+                        android:text="@string/login_to_continue"
+                        android:textColor="@color/gainsboro"
+                        android:textSize="15sp"
                         android:fontFamily="@font/roboto_medium" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/don_t_have_an_account"
-                            android:textSize="15sp"
-                            android:fontFamily="@font/roboto_medium" />
-
-                        <TextView
-                            android:id="@+id/redirect_to_register"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/register"
-                            android:textSize="15sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/fire_engine_red"
-                            android:layout_marginStart="6dp"
-                            android:clickable="true"
-                            android:foreground="?attr/selectableItemBackground"
-                            android:fontFamily="@font/roboto_medium"
-                            android:focusable="true" />
-
-                    </LinearLayout>
 
                 </LinearLayout>
 
-            </ScrollView>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginBottom="20dp">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:src="@drawable/ic_app"
+                        android:contentDescription="@string/app_name" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/app_name"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/input_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="53dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:hint="@string/username"
+                    android:textColorHint="@color/gainsboro"
+                    android:padding="10dp"
+                    android:textSize="16sp"
+                    android:minWidth="380dp"
+                    android:text="@={login.username}"
+                    android:inputType="textPersonName"
+                    android:background="@drawable/input_background"
+                    android:fontFamily="@font/roboto_medium"
+                    android:drawableEnd="@drawable/ic_user"
+                    android:autofillHints="name" />
+
+                <EditText
+                    android:id="@+id/input_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="53dp"
+                    android:background="@drawable/input_background"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="15dp"
+                    android:hint="@string/password"
+                    android:padding="10dp"
+                    android:minWidth="380dp"
+                    android:text="@={login.password}"
+                    android:inputType="textPassword"
+                    android:textColorHint="@color/gainsboro"
+                    android:layout_marginStart="10dp"
+                    android:textSize="16sp"
+                    android:drawableEnd="@drawable/ic_password"
+                    android:fontFamily="@font/roboto_medium"
+                    android:autofillHints="password" />
+
+                <ProgressBar
+                    android:id="@+id/login_progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginTop="10dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/login_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="55dp"
+                    android:backgroundTint="@color/fire_engine_red"
+                    app:cornerRadius="10dp"
+                    android:text="@string/login"
+                    android:textStyle="bold"
+                    android:minWidth="380dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:onClick="@{()->login.login()}"
+                    android:fontFamily="@font/roboto_medium" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/don_t_have_an_account"
+                        android:textSize="15sp"
+                        android:fontFamily="@font/roboto_medium" />
+
+                    <TextView
+                        android:id="@+id/redirect_to_register"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/register"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/fire_engine_red"
+                        android:layout_marginStart="6dp"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:fontFamily="@font/roboto_medium"
+                        android:focusable="true" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/no_internet_access_layout_login"

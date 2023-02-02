@@ -11,4 +11,6 @@ object Constants {
     const val PP = "product_price"
     const val UD_DB = "user_data"
     const val SC = "shopping_cart"
+    const val FAV = "favorites"
+    const val HIS = "history"
 }
