@@ -4,7 +4,6 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.daniel.miaumart.R
@@ -34,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(networkStateReceiver, connectivity)
     }
 
-    private fun initBottomNavigation(){
+    private fun initBottomNavigation() {
         val navController = findNavController(R.id.fragment)
         binding.bottomNavigation.setupWithNavController(navController)
     }

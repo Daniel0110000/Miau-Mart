@@ -6,13 +6,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.squareup.picasso.Picasso
 
-fun ImageView.load(url: String){
+fun ImageView.load(url: String) {
     Picasso.get()
         .load(url)
         .into(this)
 }
 
-fun ImageView.loadWithGlide(context: Context, url: String){
+fun ImageView.loadWithGlide(context: Context, url: String) {
     Glide.get(context).clearMemory()
     Glide.with(context)
         .load(url)

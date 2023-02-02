@@ -143,14 +143,14 @@
 
     <include
         android:id="@+id/loading_data_layout_search"
+        layout="@layout/loading_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        layout="@layout/loading_layout"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_layout" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/no_internet_access_layout_search"

@@ -26,8 +26,8 @@ class SplashScreen : AppCompatActivity() {
 
     }
 
-    private fun startTimer(){
-        object : CountDownTimer(3000L, 1000L){
+    private fun startTimer() {
+        object : CountDownTimer(3000L, 1000L) {
             override fun onTick(p0: Long) {}
 
             override fun onFinish() {

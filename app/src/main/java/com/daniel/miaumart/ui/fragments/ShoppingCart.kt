@@ -82,12 +82,14 @@ class ShoppingCart : Fragment(), CartItemClickListener {
 
     private fun onDataRetrieved(products: ArrayList<ShoppingCartML>) {
         if (products.isEmpty()) binding.emptyCartLayout.visibility = View.VISIBLE
-        else { thereAreProducts = true;binding.emptyCartLayout.visibility = View.GONE }
+        else {
+            thereAreProducts = true;binding.emptyCartLayout.visibility = View.GONE
+        }
         calculateTotal(products)
         setUpRecyclerView(products)
     }
 
-    private fun calculateTotal(products: ArrayList<ShoppingCartML>){
+    private fun calculateTotal(products: ArrayList<ShoppingCartML>) {
         var totalItems = 0
         var total = 0.0
         products.forEach { items ->
@@ -144,7 +146,8 @@ class ShoppingCart : Fragment(), CartItemClickListener {
     private fun updateToBuyLayoutVisibility() {
         if (isToBuyLayoutVisible == desiredToBuyLayoutVisibility) return
         isToBuyLayoutVisible = desiredToBuyLayoutVisibility
-        binding.toBuyLayout.visibility = if (desiredToBuyLayoutVisibility) View.VISIBLE else View.GONE
+        binding.toBuyLayout.visibility =
+            if (desiredToBuyLayoutVisibility) View.VISIBLE else View.GONE
         binding.openToBuy.visibility = if (desiredToBuyLayoutVisibility) View.GONE else View.VISIBLE
     }
 

@@ -26,7 +26,11 @@ constructor(
     }
 
     private fun getAllProducts() =
-        viewModelScope.launch { productsRepository.getAllProductsForSearch { products -> allProducts.value = products } }
+        viewModelScope.launch {
+            productsRepository.getAllProductsForSearch { products ->
+                allProducts.value = products
+            }
+        }
 
 
 }

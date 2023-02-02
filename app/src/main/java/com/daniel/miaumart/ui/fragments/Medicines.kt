@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.daniel.miaumart.R
-import com.daniel.miaumart.databinding.FragmentMedicinesBinding
 import com.daniel.miaumart.domain.utilities.Constants.MEDICINES
 import com.daniel.miaumart.ui.commons.ProductsByCategory
 import com.daniel.miaumart.ui.viewModels.HomeViewModel

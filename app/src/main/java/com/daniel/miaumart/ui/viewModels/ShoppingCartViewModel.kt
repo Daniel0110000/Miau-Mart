@@ -26,7 +26,11 @@ constructor(
 
     fun startListening(documentName: String, listener: (ArrayList<ShoppingCartML>) -> Unit) {
         viewModelScope.launch {
-            try { productsRepository.getAllProductsCart(true, documentName, listener) } catch (e: Exception) { e.printStackTrace() }
+            try {
+                productsRepository.getAllProductsCart(true, documentName, listener)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -78,11 +82,13 @@ constructor(
         when (val allDelete = productsRepository.deleteAllProductsCart(BasicUserData.username)) {
             is Resource.Success -> withContext(Dispatchers.Main) {
                 allDelete.data!!.apply {
-                    addOnSuccessListener {  message.value = "Successful purchase!" }
+                    addOnSuccessListener { message.value = "Successful purchase!" }
                     addOnFailureListener { message.value = "Error when buying the products" }
                 }
             }
-            is Resource.Error -> withContext(Dispatchers.Main) { message.value = allDelete.message!! }
+            is Resource.Error -> withContext(Dispatchers.Main) {
+                message.value = allDelete.message!!
+            }
         }
     }
 }

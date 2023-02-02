@@ -1,6 +1,5 @@
 package com.daniel.miaumart.ui.fragments
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -63,7 +62,7 @@ class Home : Fragment() {
         }
     }
 
-    private fun startActivity(activityClass: Class<*>){
+    private fun startActivity(activityClass: Class<*>) {
         startActivity(Intent(requireContext(), activityClass))
         Animatoo.animateSlideUp(requireActivity())
     }

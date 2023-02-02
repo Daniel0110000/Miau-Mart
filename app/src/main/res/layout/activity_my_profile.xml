@@ -11,9 +11,9 @@
         android:id="@+id/app_bar_layout_mp"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -47,14 +47,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:fontFamily="@font/roboto_medium"
                 android:text="@string/my_profile"
                 android:textSize="20sp"
-                android:fontFamily="@font/roboto_medium"
                 android:textStyle="bold"
-                android:layout_marginStart="5dp"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/back_layout"/>
+                app:layout_constraintStart_toEndOf="@id/back_layout"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -82,31 +82,31 @@
                 android:layout_marginTop="10dp"
                 android:scaleType="fitXY"
                 android:theme="@style/profile_image_style"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/change_profile_image"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
+                android:layout_marginEnd="10dp"
                 android:backgroundTint="@color/etchart_dam"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="10dp"
-                android:layout_marginEnd="10dp"
-                android:clickable="true"
-                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintBottom_toBottomOf="@id/username_layout"
                 app:layout_constraintEnd_toStartOf="@+id/username_layout"
-                app:layout_constraintTop_toTopOf="@id/username_layout"
-                android:focusable="true">
+                app:layout_constraintTop_toTopOf="@id/username_layout">
 
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_change_image"
-                    android:contentDescription="@string/change_profile_picture" />
+                    android:contentDescription="@string/change_profile_picture"
+                    android:src="@drawable/ic_change_image" />
 
             </androidx.cardview.widget.CardView>
 
@@ -114,13 +114,13 @@
                 android:id="@+id/username_layout"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
+                android:layout_marginTop="5dp"
                 android:backgroundTint="@color/etchart_dam"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="10dp"
-                android:layout_marginTop="5dp"
-                app:layout_constraintTop_toBottomOf="@id/profile_image_mp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/profile_image_mp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -131,15 +131,15 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:fontFamily="@font/roboto_medium"
-                        android:textSize="18sp"
-                        android:maxLines="2"
                         android:layout_margin="5dp"
+                        android:fontFamily="@font/roboto_medium"
+                        android:maxLines="2"
                         android:textAlignment="center"
-                        app:layout_constraintTop_toTopOf="parent"
+                        android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -151,21 +151,21 @@
                 android:layout_height="45dp"
                 android:layout_marginStart="10dp"
                 android:backgroundTint="@color/etchart_dam"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="10dp"
-                android:clickable="true"
-                android:foreground="?attr/selectableItemBackground"
-                app:layout_constraintTop_toTopOf="@id/username_layout"
                 app:layout_constraintBottom_toBottomOf="@id/username_layout"
                 app:layout_constraintStart_toEndOf="@id/username_layout"
-                android:focusable="true">
+                app:layout_constraintTop_toTopOf="@id/username_layout">
 
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_close_account"
-                    android:contentDescription="@string/sign_off" />
+                    android:contentDescription="@string/sign_off"
+                    android:src="@drawable/ic_close_account" />
 
             </androidx.cardview.widget.CardView>
 
@@ -174,10 +174,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:layout_marginStart="10dp"
-                app:cardElevation="10dp"
-                app:cardCornerRadius="10dp"
                 android:layout_marginTop="10dp"
                 android:backgroundTint="@color/etchart_dam"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/username_layout">
 
@@ -192,8 +192,8 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_marginEnd="5dp"
-                        android:src="@drawable/ic_history"
-                        android:contentDescription="@string/history" />
+                        android:contentDescription="@string/history"
+                        android:src="@drawable/ic_history" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -210,39 +210,39 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:layout_marginEnd="10dp"
-                app:cardElevation="10dp"
-                app:cardCornerRadius="10dp"
-                android:clickable="true"
                 android:layout_marginTop="10dp"
-                android:foreground="?attr/selectableItemBackground"
+                android:layout_marginEnd="10dp"
                 android:backgroundTint="@color/etchart_dam"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/username_layout"
-                android:focusable="true">
+                app:layout_constraintTop_toBottomOf="@id/username_layout">
 
                 <LinearLayout
                     android:id="@+id/delete_all_history_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
                     android:gravity="center"
+                    android:orientation="horizontal"
                     android:padding="10dp">
 
                     <ImageView
                         android:layout_width="25dp"
                         android:layout_height="25dp"
-                        android:src="@drawable/ic_delete"
-                        android:contentDescription="@string/delete_history" />
+                        android:contentDescription="@string/delete_history"
+                        android:src="@drawable/ic_delete" />
 
                     <TextView
                         android:id="@+id/number_history_items"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="18sp"
-                        android:textColor="@color/fire_engine_red"
                         android:fontFamily="@font/roboto_medium"
-                        android:textStyle="bold"/>
+                        android:textColor="@color/fire_engine_red"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
@@ -252,30 +252,30 @@
                 android:id="@+id/empty_history_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
                 android:layout_marginTop="50dp"
                 android:layout_marginBottom="25dp"
+                android:gravity="center"
+                android:orientation="vertical"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/history_title_layout"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/history_title_layout">
 
                 <ImageView
                     android:layout_width="85dp"
                     android:layout_height="85dp"
-                    android:src="@drawable/ic_history"
-                    android:contentDescription="@string/history" />
+                    android:contentDescription="@string/history"
+                    android:src="@drawable/ic_history" />
 
                 <TextView
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/your_history_is_empty"
                     android:fontFamily="@font/roboto_medium"
+                    android:text="@string/your_history_is_empty"
                     android:textAlignment="center"
-                    android:textSize="15sp"
-                    android:textColor="@color/gainsboro"/>
+                    android:textColor="@color/gainsboro"
+                    android:textSize="15sp" />
 
             </LinearLayout>
 
@@ -285,9 +285,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/history_title_layout"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@id/history_title_layout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -297,35 +297,35 @@
         android:id="@+id/no_internet_access_layout_mp"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/rangoon_green"
         android:layout_margin="10dp"
+        android:background="@color/rangoon_green"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
             android:id="@+id/icon_wifi_off"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:src="@drawable/ic_wifi_off"
             android:layout_marginStart="10dp"
-            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/you_don_t_have_internet_access"
+            android:src="@drawable/ic_wifi_off"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:contentDescription="@string/you_don_t_have_internet_access" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/you_don_t_have_internet_access"
             android:layout_marginStart="5dp"
             android:fontFamily="@font/roboto_medium"
-            android:textSize="15sp"
+            android:text="@string/you_don_t_have_internet_access"
             android:textColor="@color/gainsboro"
-            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/icon_wifi_off"/>
+            app:layout_constraintStart_toEndOf="@id/icon_wifi_off"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

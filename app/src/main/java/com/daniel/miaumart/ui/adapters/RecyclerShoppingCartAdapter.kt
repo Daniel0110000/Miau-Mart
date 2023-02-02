@@ -11,9 +11,15 @@ import com.daniel.miaumart.domain.extensions.load
 import com.daniel.miaumart.domain.models.ShoppingCartML
 
 
-class RecyclerShoppingCartAdapter(private val productsList: ArrayList<ShoppingCartML>, private val listener: CartItemClickListener): RecyclerView.Adapter<RecyclerShoppingCartAdapter.ViewHolder>(){
+class RecyclerShoppingCartAdapter(
+    private val productsList: ArrayList<ShoppingCartML>,
+    private val listener: CartItemClickListener
+) : RecyclerView.Adapter<RecyclerShoppingCartAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recycler_shopping_cart_row_design, parent, false))
+        return ViewHolder(
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.recycler_shopping_cart_row_design, parent, false)
+        )
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -30,7 +36,7 @@ class RecyclerShoppingCartAdapter(private val productsList: ArrayList<ShoppingCa
         private val numberItems: TextView = itemView.findViewById(R.id.number_items_sc)
         private val deleteProduct: ImageView = itemView.findViewById(R.id.delete_product_sc)
 
-        fun print(position: Int){
+        fun print(position: Int) {
             productName.text = productsList[position].productName
             productImage.load(productsList[position].productImage)
             productPrice.text = "$${productsList[position].productPrice}"

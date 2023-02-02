@@ -15,14 +15,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoritesViewModel
-    @Inject
-    constructor(
-        private val productsRepository: ProductsRepository
-    ): ViewModel() {
+@Inject
+constructor(
+    private val productsRepository: ProductsRepository
+) : ViewModel() {
 
     val message = MutableLiveData<String>()
 
-    fun getAllProductsFavorites(documentName: String, listener: (ArrayList<FavoritesML>) -> Unit){
+    fun getAllProductsFavorites(documentName: String, listener: (ArrayList<FavoritesML>) -> Unit) {
         viewModelScope.launch {
             productsRepository.getAllProductsFavorites(true, documentName, listener)
         }
@@ -34,10 +34,11 @@ class FavoritesViewModel
         }
     }
 
-    fun deleteFavorite(favoriteId: String){
+    fun deleteFavorite(favoriteId: String) {
         viewModelScope.launch {
             try {
-                val deleteFavorite = productsRepository.deleteFavoriteProduct(BasicUserData.username, favoriteId)
+                val deleteFavorite =
+                    productsRepository.deleteFavoriteProduct(BasicUserData.username, favoriteId)
                 withContext(Dispatchers.Main) {
                     when (deleteFavorite) {
                         is Resource.Success -> deleteFavorite.data?.let { message.postValue("Product removed from favorites!") }
@@ -45,8 +46,10 @@ class FavoritesViewModel
                         is Resource.Error -> message.value = deleteFavorite.message.toString()
                     }
                 }
-            } catch (e: Exception){
-                withContext(Dispatchers.Main){ message.value = "Failed to remove product from favorites" }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    message.value = "Failed to remove product from favorites"
+                }
             }
         }
     }

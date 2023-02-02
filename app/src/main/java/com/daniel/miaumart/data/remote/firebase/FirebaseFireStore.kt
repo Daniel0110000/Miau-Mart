@@ -26,11 +26,11 @@ import kotlin.collections.ArrayList
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-suspend fun FirebaseFirestore.getProducts(category: String): ArrayList<Products>{
+suspend fun FirebaseFirestore.getProducts(category: String): ArrayList<Products> {
     return suspendCoroutine { count ->
         val productsData = arrayListOf<Products>()
         collection(category).get().addOnSuccessListener { documents ->
-            for(document in documents){
+            for (document in documents) {
                 productsData.add(
                     Products(
                         id = document.id,
@@ -45,7 +45,7 @@ suspend fun FirebaseFirestore.getProducts(category: String): ArrayList<Products>
     }
 }
 
-suspend fun FirebaseFirestore.getProductDetails(category: String, pid: String): Products{
+suspend fun FirebaseFirestore.getProductDetails(category: String, pid: String): Products {
     return collection(category).document(pid).get().await().let { document ->
         val product = Products(
             id = document.id,
@@ -68,22 +68,31 @@ suspend fun FirebaseFirestore.register(userData: HashMap<String, String?>): Stri
     return "Username already registered!"
 }
 
-suspend fun FirebaseFirestore.login(username: String, password: String): User?{
+suspend fun FirebaseFirestore.login(username: String, password: String): User? {
     val document = collection(UD_DB).document(username).get().asDeferred().await()
-    return if(document.exists() && SecurityService.validatePassword(password, document.getString("password")!!)){
-         User(
+    return if (document.exists() && SecurityService.validatePassword(
+            password,
+            document.getString("password")!!
+        )
+    ) {
+        User(
             0,
             document.getString("username").toString(),
             document.getString("profile_image").toString()
         )
-    }else null
+    } else null
 }
 
 fun FirebaseFirestore.addToCard(documentName: String, productDates: ArrayList<String>): Task<Void> =
-    collection(SC).document(documentName).set(mapOf(UUID.randomUUID().toString() to productDates), SetOptions.merge())
+    collection(SC).document(documentName)
+        .set(mapOf(UUID.randomUUID().toString() to productDates), SetOptions.merge())
 
 var listenerRegistrationCart: ListenerRegistration? = null
-fun FirebaseFirestore.getAllProductsCart(runCode: Boolean, documentName: String, listener: (ArrayList<ShoppingCartML>) -> Unit) {
+fun FirebaseFirestore.getAllProductsCart(
+    runCode: Boolean,
+    documentName: String,
+    listener: (ArrayList<ShoppingCartML>) -> Unit
+) {
     if (runCode) {
         listenerRegistrationCart = collection(SC).document(documentName)
             .addSnapshotListener { document, _ ->
@@ -118,13 +127,22 @@ fun FirebaseFirestore.getAllProductsCart(runCode: Boolean, documentName: String,
 fun FirebaseFirestore.deleteProductCart(productId: String, documentName: String): Task<Void> =
     collection(SC).document(documentName).update(productId, FieldValue.delete())
 
-fun FirebaseFirestore.deleteAllProductCart(documentName: String): Task<Void> = collection(SC).document(documentName).set(mapOf<String, Any>())
+fun FirebaseFirestore.deleteAllProductCart(documentName: String): Task<Void> =
+    collection(SC).document(documentName).set(mapOf<String, Any>())
 
-fun FirebaseFirestore.addToFavorites(documentName: String, productDates: ArrayList<String>): Task<Void> =
-    collection(FAV).document(documentName).set(mapOf(UUID.randomUUID().toString() to productDates), SetOptions.merge())
+fun FirebaseFirestore.addToFavorites(
+    documentName: String,
+    productDates: ArrayList<String>
+): Task<Void> =
+    collection(FAV).document(documentName)
+        .set(mapOf(UUID.randomUUID().toString() to productDates), SetOptions.merge())
 
 var listenerRegistrationFavorites: ListenerRegistration? = null
-fun FirebaseFirestore.getAllProductsFavorites(runCode: Boolean, documentName: String, listener: (ArrayList<FavoritesML>) -> Unit) {
+fun FirebaseFirestore.getAllProductsFavorites(
+    runCode: Boolean,
+    documentName: String,
+    listener: (ArrayList<FavoritesML>) -> Unit
+) {
     if (runCode) {
         listenerRegistrationFavorites = collection(FAV).document(documentName)
             .addSnapshotListener { document, _ ->
@@ -158,23 +176,31 @@ fun FirebaseFirestore.getAllProductsFavorites(runCode: Boolean, documentName: St
 }
 
 fun FirebaseFirestore.deleteFavoriteProduct(productId: String, documentName: String): Task<Void> =
-      collection(FAV).document(documentName).update(productId, FieldValue.delete())
+    collection(FAV).document(documentName).update(productId, FieldValue.delete())
 
-fun FirebaseFirestore.addToHistory(documentName: String, productDates: ArrayList<String>): Task<Void> =
-    collection(HIS).document(documentName).set(mapOf(UUID.randomUUID().toString() to productDates), SetOptions.merge())
+fun FirebaseFirestore.addToHistory(
+    documentName: String,
+    productDates: ArrayList<String>
+): Task<Void> =
+    collection(HIS).document(documentName)
+        .set(mapOf(UUID.randomUUID().toString() to productDates), SetOptions.merge())
 
 var listenerRegistrationHistory: ListenerRegistration? = null
-fun FirebaseFirestore.getAllHistory(runCode: Boolean, documentName: String, listener: (ArrayList<History>) -> Unit){
-    if(runCode){
+fun FirebaseFirestore.getAllHistory(
+    runCode: Boolean,
+    documentName: String,
+    listener: (ArrayList<History>) -> Unit
+) {
+    if (runCode) {
         listenerRegistrationHistory = collection(HIS).document(documentName)
             .addSnapshotListener { document, _ ->
-                if(document != null && document.exists()){
+                if (document != null && document.exists()) {
                     val historyList = arrayListOf<History>()
                     val data = document.data
-                    if(data != null){
-                        for (field in data){
+                    if (data != null) {
+                        for (field in data) {
                             val value = field.value
-                            if(value is ArrayList<*> && value.size >= 5){
+                            if (value is ArrayList<*> && value.size >= 5) {
                                 historyList.add(
                                     History(
                                         value[0].toString(),
@@ -190,20 +216,21 @@ fun FirebaseFirestore.getAllHistory(runCode: Boolean, documentName: String, list
                     listener(historyList)
                 }
             }
-    }else{
+    } else {
         listenerRegistrationHistory?.remove()
     }
 }
 
-fun FirebaseFirestore.deleteAllHistory(documentName: String): Task<Void> =collection(HIS).document(documentName).set(mapOf<String, Any>())
+fun FirebaseFirestore.deleteAllHistory(documentName: String): Task<Void> =
+    collection(HIS).document(documentName).set(mapOf<String, Any>())
 
-fun FirebaseFirestore.getAllProductsForSearch(listener: (ArrayList<SearchML>) -> Unit){
+fun FirebaseFirestore.getAllProductsForSearch(listener: (ArrayList<SearchML>) -> Unit) {
     val collections = listOf(FOODS, MEDICINES, ACCESSORIES, TOYS)
     val productsList: ArrayList<SearchML> = arrayListOf()
 
     collections.forEachIndexed { index, collection ->
         collection(collection).get().addOnSuccessListener { documents ->
-            for(document in documents){
+            for (document in documents) {
                 productsList.add(
                     SearchML(
                         productId = document.id,
@@ -214,7 +241,7 @@ fun FirebaseFirestore.getAllProductsForSearch(listener: (ArrayList<SearchML>) ->
                     )
                 )
             }
-            if(index == collections.lastIndex) listener(productsList)
+            if (index == collections.lastIndex) listener(productsList)
         }
     }
 }

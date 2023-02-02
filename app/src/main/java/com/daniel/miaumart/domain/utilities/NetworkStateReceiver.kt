@@ -12,21 +12,21 @@ import com.daniel.miaumart.R
 
 class NetworkStateReceiver(
     private val layout: ConstraintLayout
-): BroadcastReceiver() {
+) : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent?) {
-        if(!isConnected(context)){
+        if (!isConnected(context)) {
             layout.animation = AnimationUtils.loadAnimation(context, R.anim.open_layout_animation)
             layout.visibility = View.VISIBLE
-        }
-        else{
+        } else {
             layout.animation = AnimationUtils.loadAnimation(context, R.anim.close_layout_animation)
             layout.visibility = View.GONE
         }
     }
 
-    private fun isConnected(context: Context): Boolean{
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    private fun isConnected(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
         return activeNetwork?.isConnectedOrConnecting == true
     }

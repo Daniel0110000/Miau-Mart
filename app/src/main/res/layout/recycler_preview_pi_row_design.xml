@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.daniel.miaumart.ui.widget.BorderCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/preview_product_images_layout"
     android:layout_width="105dp"
     android:layout_height="151dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="10dp"
-    android:elevation="10dp"
     android:background="@color/rangoon_green"
+    android:elevation="10dp"
     app:borderNormalColor="@color/rangoon_green"
     app:borderSelectedColor="@color/fire_engine_red"
     app:borderWidth="3dp">
@@ -15,7 +15,6 @@
         android:id="@+id/product_image_rd"
         android:layout_width="81dp"
         android:layout_height="104dp"
-        android:src="@drawable/pt"
         android:layout_gravity="center"
         android:contentDescription="@string/products_image" />
 

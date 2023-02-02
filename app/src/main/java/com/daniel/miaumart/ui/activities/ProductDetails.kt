@@ -45,25 +45,35 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
         registerReceiver(networkStateReceiver, connectivity)
     }
 
-    private fun initIUI(){
+    private fun initIUI() {
 
         binding.details = viewModel
 
-        if(BasicUserData.isRegistered){
-            viewModel.isFavorites.observe(this){ favorite ->
+        if (BasicUserData.isRegistered) {
+            viewModel.isFavorites.observe(this) { favorite ->
                 isFavorite = favorite
-                binding.iconFavorite.setImageResource( if(favorite) R.drawable.ic_favorite else R.drawable.ic_favorite_border )
+                binding.iconFavorite.setImageResource(if (favorite) R.drawable.ic_favorite else R.drawable.ic_favorite_border)
             }
-        }else binding.iconFavorite.setImageResource(R.drawable.ic_favorite_border)
+        } else binding.iconFavorite.setImageResource(R.drawable.ic_favorite_border)
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
         binding.backLayout.setOnClickListener { finish(); Animatoo.animateSlideRight(this) }
-        viewModel.getProductDetails(intent.getStringExtra("pid").toString(), intent.getStringExtra("category").toString())
-        viewModel.totalPrice.observe(this){ total -> binding.totalPrice.text = "%.2f".format(total) }
-        viewModel.units.observe(this){ units -> binding.quantifyProducts.text = units.toString() }
-        viewModel.message.observe(this){ message -> Snackbar.showMessage(message, binding.productDetailsLayout) }
-        viewModel.productsByID.observe(this){ product ->
-            if(product != null){
+        viewModel.getProductDetails(
+            intent.getStringExtra("pid").toString(),
+            intent.getStringExtra("category").toString()
+        )
+        viewModel.totalPrice.observe(this) { total ->
+            binding.totalPrice.text = "%.2f".format(total)
+        }
+        viewModel.units.observe(this) { units -> binding.quantifyProducts.text = units.toString() }
+        viewModel.message.observe(this) { message ->
+            Snackbar.showMessage(
+                message,
+                binding.productDetailsLayout
+            )
+        }
+        viewModel.productsByID.observe(this) { product ->
+            if (product != null) {
                 product.productImages?.let { initRecyclerView(it) }
                 binding.productNamePd.text = product.productName
                 binding.productPricePd.text = product.productPrice
@@ -71,7 +81,7 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
         }
 
         binding.addToCard.setOnClickListener {
-            if(BasicUserData.isRegistered) viewModel.addToCard()
+            if (BasicUserData.isRegistered) viewModel.addToCard()
             else {
                 startActivity(Intent(this, Login::class.java))
                 finish()
@@ -79,10 +89,10 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
             }
         }
         binding.addFavorite.setOnClickListener {
-            if(BasicUserData.isRegistered){
-                if(isFavorite) viewModel.deleteFavorite()
+            if (BasicUserData.isRegistered) {
+                if (isFavorite) viewModel.deleteFavorite()
                 else viewModel.addToFavorites()
-            }else{
+            } else {
                 startActivity(Intent(this, Login::class.java))
                 finish()
                 Animatoo.animateSlideUp(this)
@@ -91,11 +101,12 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
 
     }
 
-    private fun initRecyclerView(images: ArrayList<String>){
-        if(BasicUserData.isRegistered) viewModel.checkProductFavorite()
+    private fun initRecyclerView(images: ArrayList<String>) {
+        if (BasicUserData.isRegistered) viewModel.checkProductFavorite()
         binding.recyclerPreviewProductImages.apply {
             hasFixedSize()
-            layoutManager = LinearLayoutManager(this@ProductDetails, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                LinearLayoutManager(this@ProductDetails, LinearLayoutManager.HORIZONTAL, false)
             adapter = RecyclerPreviewPIAdapter(images, this@ProductDetails)
         }
     }
@@ -109,15 +120,16 @@ class ProductDetails : AppCompatActivity(), ImagesItemClickListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.stopListening(BasicUserData.username){}
+        viewModel.stopListening(BasicUserData.username) {}
     }
 
-    private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true){
-        override fun handleOnBackPressed() {
-            finish()
-            Animatoo.animateSlideDown(this@ProductDetails)
+    private val onBackPressedCallback: OnBackPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+                Animatoo.animateSlideDown(this@ProductDetails)
+            }
+
         }
-
-    }
 
 }

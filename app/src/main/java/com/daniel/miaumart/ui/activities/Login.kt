@@ -44,15 +44,17 @@ class Login : AppCompatActivity() {
         binding.apply {
             login = viewModel
             redirectToRegister.setOnClickListener {
-                startActivity(Intent(this@Login, Register::class.java)); Animatoo.animateSlideLeft(this@Login)
+                startActivity(Intent(this@Login, Register::class.java)); Animatoo.animateSlideLeft(
+                this@Login
+            )
             }
         }
 
         binding.backLayout.setOnClickListener { finish(); Animatoo.animateSlideDown(this) }
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
         viewModel.isLoading.observe(this) { isLoading ->
-            binding.loginProgressBar.visibility = if(isLoading) View.VISIBLE else View.GONE
-            binding.loginButton.visibility = if(isLoading) View.GONE else View.VISIBLE
+            binding.loginProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            binding.loginButton.visibility = if (isLoading) View.GONE else View.VISIBLE
 
             viewModel.message.observe(this) { message ->
                 if (message.isNotEmpty()) {
@@ -79,12 +81,13 @@ class Login : AppCompatActivity() {
         unregisterReceiver(networkStateReceiver)
     }
 
-    private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true){
-        override fun handleOnBackPressed() {
-            finish()
-            Animatoo.animateSlideDown(this@Login)
-        }
+    private val onBackPressedCallback: OnBackPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+                Animatoo.animateSlideDown(this@Login)
+            }
 
-    }
+        }
 
 }

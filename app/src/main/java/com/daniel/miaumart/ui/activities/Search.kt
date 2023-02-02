@@ -54,14 +54,20 @@ class Search : AppCompatActivity(), SearchItemClickListener {
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
         findViewById<View>(R.id.loading_data_layout_search).visibility = View.VISIBLE
         binding.recyclerSearch.visibility = View.GONE
-        viewModel.allProducts.observe(this) { products -> if (products != null) initRecyclerView(products) }
+        viewModel.allProducts.observe(this) { products ->
+            if (products != null) initRecyclerView(
+                products
+            )
+        }
 
         binding.inputSearch.addTextChangedListener { userFilter ->
             val productsFilter = productsList.filter { products ->
                 products.productName.lowercase().contains(userFilter.toString().lowercase())
             }
-            binding.recyclerSearch.visibility = if(productsFilter.isEmpty()) View.GONE else View.VISIBLE
-            binding.productNotFoundLayout.visibility = if(productsFilter.isEmpty()) View.VISIBLE else View.GONE
+            binding.recyclerSearch.visibility =
+                if (productsFilter.isEmpty()) View.GONE else View.VISIBLE
+            binding.productNotFoundLayout.visibility =
+                if (productsFilter.isEmpty()) View.VISIBLE else View.GONE
             adapter.updateProducts(productsFilter as ArrayList<SearchML>)
         }
     }
@@ -89,11 +95,12 @@ class Search : AppCompatActivity(), SearchItemClickListener {
         unregisterReceiver(networkStateReceiver)
     }
 
-    private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true){
-        override fun handleOnBackPressed() {
-            finish()
-            Animatoo.animateSlideDown(this@Search)
-        }
+    private val onBackPressedCallback: OnBackPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+                Animatoo.animateSlideDown(this@Search)
+            }
 
-    }
+        }
 }

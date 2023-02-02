@@ -123,6 +123,7 @@
                     android:minWidth="380dp"
                     android:padding="10dp"
                     android:text="@={register.username}"
+                    android:textColor="@color/white"
                     android:textColorHint="@color/gainsboro"
                     android:textSize="16sp" />
 
@@ -142,6 +143,7 @@
                     android:minWidth="380dp"
                     android:padding="10dp"
                     android:text="@={register.password}"
+                    android:textColor="@color/white"
                     android:textColorHint="@color/gainsboro"
                     android:textSize="16sp" />
 
@@ -161,6 +163,7 @@
                     android:minWidth="380dp"
                     android:padding="10dp"
                     android:text="@={register.repeatPassword}"
+                    android:textColor="@color/white"
                     android:textColorHint="@color/gainsboro"
                     android:textSize="16sp" />
 

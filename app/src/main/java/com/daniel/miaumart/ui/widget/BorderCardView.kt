@@ -11,7 +11,7 @@ import com.daniel.miaumart.R
 
 class BorderCardView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-): FrameLayout(context, attrs, defStyleAttr){
+) : FrameLayout(context, attrs, defStyleAttr) {
 
     private var isSelectedV = false
     private val paint = Paint().apply {
@@ -25,8 +25,10 @@ class BorderCardView @JvmOverloads constructor(
 
     init {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.BorderCardView)
-        borderNormalColor = typedArray.getColor(R.styleable.BorderCardView_borderNormalColor, Color.GRAY)
-        borderSelectedColor = typedArray.getColor(R.styleable.BorderCardView_borderSelectedColor, Color.GREEN)
+        borderNormalColor =
+            typedArray.getColor(R.styleable.BorderCardView_borderNormalColor, Color.GRAY)
+        borderSelectedColor =
+            typedArray.getColor(R.styleable.BorderCardView_borderSelectedColor, Color.GREEN)
         borderWith = typedArray.getDimension(R.styleable.BorderCardView_borderWidth, 2f)
         paint.strokeWidth = borderWith
         typedArray.recycle()
@@ -37,8 +39,8 @@ class BorderCardView @JvmOverloads constructor(
         val rect = RectF(0f, 0f, width.toFloat(), height.toFloat())
         val halfStrokeWith = paint.strokeWidth / 2f
         rect.inset(halfStrokeWith, halfStrokeWith)
-        paint.color = if(isSelectedV) borderSelectedColor else borderNormalColor
-        canvas.drawRoundRect(rect, 10f, 10f, paint )
+        paint.color = if (isSelectedV) borderSelectedColor else borderNormalColor
+        canvas.drawRoundRect(rect, 10f, 10f, paint)
     }
 
     override fun setSelected(selected: Boolean) {

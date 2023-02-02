@@ -10,12 +10,13 @@ import com.daniel.miaumart.ui.fragments.Foods
 import com.daniel.miaumart.ui.fragments.Medicines
 import com.daniel.miaumart.ui.fragments.Toys
 
-class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle): FragmentStateAdapter(fragmentManager, lifecycle) {
+class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
+    FragmentStateAdapter(fragmentManager, lifecycle) {
 
     override fun getItemCount(): Int = NUMB_TABS
 
     override fun createFragment(position: Int): Fragment {
-        when (position){
+        when (position) {
             0 -> return Foods()
             1 -> return Medicines()
             2 -> return Accessories()

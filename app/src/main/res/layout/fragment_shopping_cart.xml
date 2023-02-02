@@ -78,8 +78,8 @@
             android:fontFamily="@font/roboto_medium"
             android:text="@string/you_have_no_items_in_your_shopping_cart"
             android:textAlignment="center"
-            android:textSize="15sp"
-            android:textColor="@color/gainsboro"/>
+            android:textColor="@color/gainsboro"
+            android:textSize="15sp" />
 
     </LinearLayout>
 

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="login"
             type="com.daniel.miaumart.ui.viewModels.LoginViewModel" />
@@ -42,62 +43,62 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="none"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/back_layout"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/back_layout">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
                 android:layout_marginTop="40dp"
+                android:gravity="center"
+                android:orientation="vertical"
                 android:paddingBottom="80dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="40dp">
+                    android:layout_marginBottom="40dp"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
                         android:text="@string/welcome_back"
                         android:textSize="23sp"
-                        android:fontFamily="@font/roboto_medium"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
                         android:text="@string/login_to_continue"
                         android:textColor="@color/gainsboro"
-                        android:textSize="15sp"
-                        android:fontFamily="@font/roboto_medium" />
+                        android:textSize="15sp" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_marginBottom="20dp"
                     android:gravity="center"
-                    android:layout_marginBottom="20dp">
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:src="@drawable/ic_app"
-                        android:contentDescription="@string/app_name" />
+                        android:contentDescription="@string/app_name"
+                        android:src="@drawable/ic_app" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
                         android:text="@string/app_name"
                         android:textSize="16sp"
-                        android:fontFamily="@font/roboto_medium"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -106,61 +107,63 @@
                     android:id="@+id/input_username"
                     android:layout_width="wrap_content"
                     android:layout_height="53dp"
-                    android:layout_marginEnd="10dp"
                     android:layout_marginStart="10dp"
-                    android:hint="@string/username"
-                    android:textColorHint="@color/gainsboro"
-                    android:padding="10dp"
-                    android:textSize="16sp"
-                    android:minWidth="380dp"
-                    android:text="@={login.username}"
-                    android:inputType="textPersonName"
+                    android:layout_marginEnd="10dp"
+                    android:autofillHints="name"
                     android:background="@drawable/input_background"
-                    android:fontFamily="@font/roboto_medium"
                     android:drawableEnd="@drawable/ic_user"
-                    android:autofillHints="name" />
+                    android:fontFamily="@font/roboto_medium"
+                    android:hint="@string/username"
+                    android:inputType="textPersonName"
+                    android:minWidth="380dp"
+                    android:padding="10dp"
+                    android:text="@={login.username}"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/gainsboro"
+                    android:textSize="16sp" />
 
                 <EditText
                     android:id="@+id/input_password"
                     android:layout_width="wrap_content"
                     android:layout_height="53dp"
-                    android:background="@drawable/input_background"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginTop="15dp"
-                    android:hint="@string/password"
-                    android:padding="10dp"
-                    android:minWidth="380dp"
-                    android:text="@={login.password}"
-                    android:inputType="textPassword"
-                    android:textColorHint="@color/gainsboro"
                     android:layout_marginStart="10dp"
-                    android:textSize="16sp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="10dp"
+                    android:autofillHints="password"
+                    android:background="@drawable/input_background"
                     android:drawableEnd="@drawable/ic_password"
                     android:fontFamily="@font/roboto_medium"
-                    android:autofillHints="password" />
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    android:minWidth="380dp"
+                    android:padding="10dp"
+                    android:text="@={login.password}"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/gainsboro"
+                    android:textSize="16sp" />
 
                 <ProgressBar
                     android:id="@+id/login_progress_bar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/login_button"
                     android:layout_width="wrap_content"
                     android:layout_height="55dp"
-                    android:backgroundTint="@color/fire_engine_red"
-                    app:cornerRadius="10dp"
-                    android:text="@string/login"
-                    android:textStyle="bold"
-                    android:minWidth="380dp"
-                    android:layout_marginEnd="10dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
                     android:layout_marginBottom="5dp"
+                    android:backgroundTint="@color/fire_engine_red"
+                    android:fontFamily="@font/roboto_medium"
+                    android:minWidth="380dp"
                     android:onClick="@{()->login.login()}"
-                    android:fontFamily="@font/roboto_medium" />
+                    android:text="@string/login"
+                    android:textStyle="bold"
+                    app:cornerRadius="10dp" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -170,23 +173,23 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
                         android:text="@string/don_t_have_an_account"
-                        android:textSize="15sp"
-                        android:fontFamily="@font/roboto_medium" />
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/redirect_to_register"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/register"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/fire_engine_red"
                         android:layout_marginStart="6dp"
                         android:clickable="true"
-                        android:foreground="?attr/selectableItemBackground"
+                        android:focusable="true"
                         android:fontFamily="@font/roboto_medium"
-                        android:focusable="true" />
+                        android:foreground="?attr/selectableItemBackground"
+                        android:text="@string/register"
+                        android:textColor="@color/fire_engine_red"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
@@ -198,35 +201,35 @@
             android:id="@+id/no_internet_access_layout_login"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/rangoon_green"
             android:layout_margin="10dp"
+            android:background="@color/rangoon_green"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
                 android:id="@+id/icon_wifi_off"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@drawable/ic_wifi_off"
                 android:layout_marginStart="10dp"
-                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/you_don_t_have_internet_access"
+                android:src="@drawable/ic_wifi_off"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:contentDescription="@string/you_don_t_have_internet_access" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/you_don_t_have_internet_access"
                 android:layout_marginStart="5dp"
                 android:fontFamily="@font/roboto_medium"
-                android:textSize="15sp"
+                android:text="@string/you_don_t_have_internet_access"
                 android:textColor="@color/gainsboro"
-                app:layout_constraintTop_toTopOf="parent"
+                android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/icon_wifi_off"/>
+                app:layout_constraintStart_toEndOf="@id/icon_wifi_off"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

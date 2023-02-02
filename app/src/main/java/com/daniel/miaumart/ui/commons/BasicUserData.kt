@@ -1,7 +1,7 @@
 package com.daniel.miaumart.ui.commons
 
 class BasicUserData {
-    companion object{
+    companion object {
         var username: String = ""
         var profileImageId: String = ""
         var profileImage: String = ""

@@ -10,10 +10,16 @@ import com.daniel.miaumart.R
 import com.daniel.miaumart.domain.extensions.load
 import com.daniel.miaumart.domain.models.FavoritesML
 
-class RecyclerFavoritesAdapter(private var favoritesList: ArrayList<FavoritesML>, private val listener: FavoritesItemClickListener): RecyclerView.Adapter<RecyclerFavoritesAdapter.ViewHolder>() {
+class RecyclerFavoritesAdapter(
+    private var favoritesList: ArrayList<FavoritesML>,
+    private val listener: FavoritesItemClickListener
+) : RecyclerView.Adapter<RecyclerFavoritesAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recycler_favorites_row_design, parent, false))
+        return ViewHolder(
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.recycler_favorites_row_design, parent, false)
+        )
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -29,11 +35,16 @@ class RecyclerFavoritesAdapter(private var favoritesList: ArrayList<FavoritesML>
         private val productPrice: TextView = itemView.findViewById(R.id.product_price_fav)
         private val deleteFavorites: ImageView = itemView.findViewById(R.id.delete_favorites)
 
-        fun print(position: Int){
+        fun print(position: Int) {
             productName.text = favoritesList[position].productName
             productImage.load(favoritesList[position].productImage)
             productPrice.text = favoritesList[position].productPrice
-            itemView.setOnClickListener { listener.onItemClickListener(favoritesList[position].productId, favoritesList[position].productCategory) }
+            itemView.setOnClickListener {
+                listener.onItemClickListener(
+                    favoritesList[position].productId,
+                    favoritesList[position].productCategory
+                )
+            }
             deleteFavorites.setOnClickListener { listener.onDeleteClickListener(favoritesList[position].id) }
         }
     }

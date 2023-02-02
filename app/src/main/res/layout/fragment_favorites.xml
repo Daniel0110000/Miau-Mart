@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/favorite_layout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/favorite_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.fragments.Favorites">
 
     <LinearLayout
         android:id="@+id/title_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="15dp"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
         android:gravity="center_vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/my_favorites_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/my_favorites"
-            android:textStyle="bold"
             android:fontFamily="@font/roboto_medium"
+            android:text="@string/my_favorites"
             android:textSize="20sp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:layout_width="23dp"
             android:layout_height="23dp"
             android:layout_marginStart="3dp"
-            android:src="@drawable/ic_favorite_red"
-            android:contentDescription="@string/favorites" />
+            android:contentDescription="@string/favorites"
+            android:src="@drawable/ic_favorite_red" />
 
     </LinearLayout>
 
@@ -42,29 +42,29 @@
         android:id="@+id/number_favorites_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginStart="10dp"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:paddingBottom="5dp"
-        app:layout_constraintTop_toBottomOf="@id/title_layout"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_layout">
 
         <ImageView
             android:layout_width="19dp"
             android:layout_height="19dp"
-            android:src="@drawable/ic_favorite_red"
-            android:contentDescription="@string/favorites" />
+            android:contentDescription="@string/favorites"
+            android:src="@drawable/ic_favorite_red" />
 
         <TextView
             android:id="@+id/number_favorites"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#EB3223"
-            android:textSize="16sp"
             android:layout_marginStart="3dp"
             android:fontFamily="@font/roboto_medium"
-            app:layout_constraintTop_toBottomOf="@id/my_favorites_title"
-            app:layout_constraintStart_toStartOf="parent"/>
+            android:textColor="#EB3223"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/my_favorites_title" />
 
     </LinearLayout>
 
@@ -72,49 +72,49 @@
         android:id="@+id/profile_image_fav"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:theme="@style/profile_image_style"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="10dp"
         android:scaleType="fitXY"
+        android:theme="@style/profile_image_style"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_favorites"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/number_favorites_layout"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/number_favorites_layout" />
 
     <LinearLayout
         android:id="@+id/empty_favorites_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:gravity="center"
+        android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/number_favorites_layout"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/number_favorites_layout">
 
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/ic_favorite"
-            android:contentDescription="@string/favorites" />
+            android:contentDescription="@string/favorites"
+            android:src="@drawable/ic_favorite" />
 
         <TextView
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="@string/you_don_t_have_favorite_products"
             android:fontFamily="@font/roboto_medium"
+            android:text="@string/you_don_t_have_favorite_products"
             android:textAlignment="center"
-            android:textSize="15sp"
-            android:textColor="@color/gainsboro"/>
+            android:textColor="@color/gainsboro"
+            android:textSize="15sp" />
 
     </LinearLayout>
 

@@ -4,10 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.appcompat.app.AlertDialog
 import com.daniel.miaumart.R
-import org.w3c.dom.Text
 
 class AlertDialog {
     companion object {

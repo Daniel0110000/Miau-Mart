@@ -73,7 +73,7 @@ class MyProfile : AppCompatActivity() {
             }
         }
         binding.deleteAllHistoryLayout.setOnClickListener {
-            if(viewModel.history.value?.isNotEmpty() == true){
+            if (viewModel.history.value?.isNotEmpty() == true) {
                 AlertDialog.buildAlertDialog(
                     "History",
                     "Do you want to delete your history?",
@@ -82,7 +82,7 @@ class MyProfile : AppCompatActivity() {
                     if (result) viewModel.deleteAllHistory()
                     else viewModel.message.value = "History not cleared!"
                 }
-            }else viewModel.message.value =  "No data to delete"
+            } else viewModel.message.value = "No data to delete"
         }
 
         if (!documentExists) {
@@ -117,8 +117,10 @@ class MyProfile : AppCompatActivity() {
 
     private fun onDataRetrieved(historyList: ArrayList<History>) {
         binding.numberHistoryItems.text = "(${historyList.size})"
-        binding.recyclerHistory.visibility = if(historyList.isNotEmpty()) View.VISIBLE else View.GONE
-        binding.emptyHistoryLayout.visibility = if(historyList.isNotEmpty()) View.GONE else View.VISIBLE
+        binding.recyclerHistory.visibility =
+            if (historyList.isNotEmpty()) View.VISIBLE else View.GONE
+        binding.emptyHistoryLayout.visibility =
+            if (historyList.isNotEmpty()) View.GONE else View.VISIBLE
         binding.recyclerHistory.apply {
             hasFixedSize()
             layoutManager = LinearLayoutManager(context)
@@ -136,12 +138,13 @@ class MyProfile : AppCompatActivity() {
         unregisterReceiver(networkStateReceiver)
     }
 
-    private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true){
-        override fun handleOnBackPressed() {
-            finish()
-            Animatoo.animateSlideDown(this@MyProfile)
-        }
+    private val onBackPressedCallback: OnBackPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+                Animatoo.animateSlideDown(this@MyProfile)
+            }
 
-    }
+        }
 
 }

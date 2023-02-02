@@ -34,8 +34,8 @@ class ProductsByCategory constructor(
         }
 
         viewModel.isLoading.observe(fragment.viewLifecycleOwner) { isLoading ->
-            loadingData.visibility = if(isLoading) View.VISIBLE else View.GONE
-            recyclerView.visibility = if(isLoading) View.GONE else View.VISIBLE
+            loadingData.visibility = if (isLoading) View.VISIBLE else View.GONE
+            recyclerView.visibility = if (isLoading) View.GONE else View.VISIBLE
         }
 
     }

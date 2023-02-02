@@ -16,10 +16,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel
-    @Inject
-    constructor(
-        private val userRepository: UserRepository
-    ): ViewModel() {
+@Inject
+constructor(
+    private val userRepository: UserRepository
+) : ViewModel() {
 
     val profileImage = MutableLiveData<Uri>()
     val username = MutableLiveData<String>()
@@ -29,21 +29,18 @@ class RegisterViewModel
     val isLoading = MutableLiveData<Boolean>()
     val completed = MutableLiveData<Boolean>()
 
-    fun register(){
+    fun register() {
         isLoading.value = true
-        if(!areFieldsValid()) {
+        if (!areFieldsValid()) {
             message.value = "Incomplete fields!"
             isLoading.value = false
-        }
-        else if (!isPasswordValid()){
+        } else if (!isPasswordValid()) {
             message.value = "Password too short!"
             isLoading.value = false
-        }
-        else if (!doPasswordsMatch()) {
+        } else if (!doPasswordsMatch()) {
             message.value = "Passwords do not match!"
             isLoading.value = false
-        }
-        else{
+        } else {
             viewModelScope.launch(Dispatchers.IO) {
                 val fileName = UUID.randomUUID().toString()
                 val userData = hashMapOf(
@@ -51,13 +48,15 @@ class RegisterViewModel
                     "password" to SecurityService.passwordHasher(password.value.toString()),
                     "profile_image" to fileName
                 )
-                when (val register = userRepository.register(userData, profileImage.value!!, fileName)){
-                    is Resource.Success -> withContext(Dispatchers.Main){
+                when (val register =
+                    userRepository.register(userData, profileImage.value!!, fileName)) {
+                    is Resource.Success -> withContext(Dispatchers.Main) {
                         message.value = register.data!!
-                        if(register.data.contains("Successfully registered user!")) completed.value = true
+                        if (register.data.contains("Successfully registered user!")) completed.value =
+                            true
                         isLoading.value = false
                     }
-                    is Resource.Error -> withContext(Dispatchers.Main){
+                    is Resource.Error -> withContext(Dispatchers.Main) {
                         message.value = register.message!!
                         isLoading.value = false
                     }
@@ -66,15 +65,15 @@ class RegisterViewModel
         }
     }
 
-    private fun areFieldsValid(): Boolean{
+    private fun areFieldsValid(): Boolean {
         return profileImage.value != null && username.value!!.isNotEmpty() && password.value!!.isNotEmpty() && repeatPassword.value!!.isNotEmpty()
     }
 
-    private fun isPasswordValid(): Boolean{
+    private fun isPasswordValid(): Boolean {
         return password.value!!.length >= 8
     }
 
-    private fun doPasswordsMatch(): Boolean{
+    private fun doPasswordsMatch(): Boolean {
         return password.value!! == repeatPassword.value!!
     }
 

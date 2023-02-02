@@ -43,7 +43,7 @@ constructor(
                     }
                     isLoading.value = false
                 }
-                is Resource.Error -> withContext(Dispatchers.Main){
+                is Resource.Error -> withContext(Dispatchers.Main) {
                     message.value = login.message ?: "Error"
                     isLoading.value = false
                 }
